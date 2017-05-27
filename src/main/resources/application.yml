@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+      url: jdbc:h2:./build/h2db
+      username: sa
+      password:
+      driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: XXXXXXXXXX@gmail.com
+    password: XXXXXXXXXX
+    properties.mail.smtp:auth: true
+    properties.mail.smtp.starttls.enable: true
+
+logging:
+  level:
+    org.springframework: INFO
+
+app:
+  url: http://localhost:8080
+  reply: java-obog@aomikan.org

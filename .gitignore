@@ -1,0 +1,29 @@
+.gradle
+/build/
+/classes/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Hide production profiles
+/src/main/resources/*.yml
+!/src/main/resources/application.yml
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/

@@ -1,0 +1,48 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.3.RELEASE'
+        vaadinVersion = '8.0.6'
+        checkerFrameworkVersion = '2.1.11'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '1.5.3.RELEASE'
+    id 'war'
+}
+
+version = '0.1'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-mail')
+    // Spring Security
+    compile('org.springframework.security:spring-security-web:4.2.2.RELEASE')
+    // Spring Context Support
+    compile('org.springframework:spring-context-support')
+    // Vaadin
+    compile('com.vaadin:vaadin-spring-boot-starter')
+    // Utilities
+    compile('org.projectlombok:lombok')
+    compile('com.sun.mail:javax.mail')
+    compile('org.pegdown:pegdown:1.6.0')
+    compile("org.checkerframework:checker-qual:${checkerFrameworkVersion}")
+    // Database
+    runtime('com.h2database:h2') // development and test
+    runtime('mysql:mysql-connector-java') // production
+    // Tests
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
+    }
+}
