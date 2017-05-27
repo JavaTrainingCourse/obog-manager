@@ -18,6 +18,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.AuthenticationException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -63,6 +64,12 @@ public class ErrorView extends Wrapper implements View {
         }
         session.setAttribute(PARAM_THROWABLE, null);
         log.error(paramMessage, paramThrowable);
+
+        if (paramThrowable instanceof AuthenticationException) {
+            Button loginButton = new Button("ログイン", click -> getUI().getNavigator().navigateTo(LoginView.VIEW_NAME));
+            addComponent(loginButton);
+            setComponentAlignment(loginButton, Alignment.MIDDLE_CENTER);
+        }
 
         Button homeButton = new Button("ホーム", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
         addComponent(homeButton);

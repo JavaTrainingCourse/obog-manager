@@ -31,10 +31,12 @@ public class Attendance {
 
     @MapsId("convocationId")
     @ManyToOne
+    @Getter
     private Convocation convocation;
 
     @MapsId("membershipId")
     @ManyToOne
+    @Getter
     private Membership membership;
 
     @Column(nullable = false)
@@ -78,5 +80,12 @@ public class Attendance {
         private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
         private Long convocationId;
         private Long membershipId;
+    }
+
+    public boolean isAttend() {
+        if (attend == null) {
+            return true;
+        }
+        return attend;
     }
 }

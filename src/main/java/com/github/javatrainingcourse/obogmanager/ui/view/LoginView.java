@@ -8,6 +8,8 @@ import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -87,5 +89,15 @@ public class LoginView extends Wrapper implements View {
         });
         loginButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         buttonArea.addComponent(loginButton);
+
+        passwordField.addShortcutListener(new ShortcutListener("Enter キーを押すとログインします",
+                ShortcutAction.KeyCode.ENTER, null) {
+            private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                loginButton.click();
+            }
+        });
     }
 }

@@ -10,6 +10,7 @@ import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationServi
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.data.Binder;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -43,7 +44,10 @@ public class NewEventView extends Wrapper implements View {
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
 
-        // TODO: 管理者ログイン & チェック
+        if (!isAdminLoggedIn()) {
+            ErrorView.show("管理者ユーザーでのログインが必要です。", null);
+            return;
+        }
 
         Convocation newConvocation = new Convocation();
         newConvocation.setTargetDate(LocalDate.now());
@@ -57,9 +61,10 @@ public class NewEventView extends Wrapper implements View {
         TextField subjectField = new TextField("件名");
         subjectField.setRequiredIndicatorVisible(true);
         subjectField.setPlaceholder("第4回 OB/OG会");
-        subjectField.setWidth(300, Unit.PIXELS);
+        subjectField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         form.addComponent(subjectField);
-        binder.forField(subjectField).bind(Convocation::getSubject, Convocation::setSubject);
+        binder.forField(subjectField).withValidator(new StringLengthValidator("入力が長すぎます", 0, 64))
+                .bind(Convocation::getSubject, Convocation::setSubject);
 
         DateField targetDateField = new DateField("開催日", newConvocation.getTargetDate());
         targetDateField.setRequiredIndicatorVisible(true);
@@ -68,13 +73,26 @@ public class NewEventView extends Wrapper implements View {
 
         TextArea descriptionArea = new TextArea("案内文 (Markdown)");
         descriptionArea.setRequiredIndicatorVisible(true);
-        descriptionArea.setWidth(300, Unit.PIXELS);
+        descriptionArea.setWidth(100, Unit.PERCENTAGE);
         form.addComponent(descriptionArea);
-        binder.forField(descriptionArea).bind(Convocation::getDescription, Convocation::setDescription);
+        binder.forField(descriptionArea).withValidator(new StringLengthValidator("入力が長すぎます", 0, 1024))
+                .bind(Convocation::getDescription, Convocation::setDescription);
+
+        HorizontalLayout buttonArea = new HorizontalLayout();
+        buttonArea.setSpacing(true);
+        addComponent(buttonArea);
+        setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
+
+        Button backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        buttonArea.addComponent(backButton);
 
         Button submitButton = new Button("イベント登録", click -> {
-            if (!binder.writeBeanIfValid(newConvocation)) {
+            if (subjectField.isEmpty() || targetDateField.isEmpty() || descriptionArea.isEmpty()) {
                 Notification.show("入力が完了していません");
+                return;
+            }
+            if (!binder.writeBeanIfValid(newConvocation)) {
+                Notification.show("不正な入力があります");
                 return;
             }
             try {
@@ -85,7 +103,7 @@ public class NewEventView extends Wrapper implements View {
                 ErrorView.show("イベントの登録に失敗しました。", e);
             }
         });
-        addComponent(submitButton);
-        setComponentAlignment(submitButton, Alignment.MIDDLE_CENTER);
+        submitButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        buttonArea.addComponent(submitButton);
     }
 }

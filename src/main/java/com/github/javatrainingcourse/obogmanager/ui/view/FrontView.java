@@ -24,6 +24,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ import java.time.LocalDate;
  * @since 0.1
  */
 @SpringView(name = FrontView.VIEW_NAME, ui = MainUI.class)
+@Slf4j
 public class FrontView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "";
@@ -69,18 +71,23 @@ public class FrontView extends Wrapper implements View {
 
         // 最新イベントがすでに終了している場合はその旨を表示し受付を行わない
         if (latestEvent.getTargetDate().isBefore(LocalDate.now())) {
+            log.info("latest: " + latestEvent.getTargetDate());
+            log.info("now:    " + LocalDate.now());
             Label expiredLabel = new Label(latestEvent.getSubject() + "は終了しました。次回の開催をお待ちください。");
             addComponent(expiredLabel);
+            printMenuSection();
             return;
         }
 
         if (!isLoggedIn()) {
             printRegistrationSection(latestEvent);
+        } else {
+            printRegistrationSection(latestEvent, getMembership());
         }
         printMenuSection();
     }
 
-    private void printRegistrationSection(Convocation latestEvent) {
+    private void printRegistrationSection(Convocation convocation) {
         Label registrationLabel = new Label(VaadinIcons.PENCIL.getHtml() + " 参加登録", ContentMode.HTML);
         registrationLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(registrationLabel);
@@ -162,7 +169,42 @@ public class FrontView extends Wrapper implements View {
                 membership.setJavaTerm(javaCheckBox.getValue() ? 0 : -1);
                 membership.setJava8Term(java8CheckBox.getValue() ? 0 : -1);
                 membership.setGoTerm(goCheckBox.getValue() ? 0 : -1);
-                attendanceService.register(membership, passwordField.getValue(), latestEvent, commentArea.getValue());
+                attendanceService.register(membership, passwordField.getValue(), convocation, commentArea.getValue());
+                getUI().getNavigator().navigateTo(ThanksView.VIEW_NAME);
+            } catch (RuntimeException e) {
+                ErrorView.show("登録に失敗しました。", e);
+            }
+        });
+        submitButton.setIcon(VaadinIcons.CHECK);
+        submitButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        addComponent(submitButton);
+        setComponentAlignment(submitButton, Alignment.MIDDLE_CENTER);
+    }
+
+    private void printRegistrationSection(Convocation convocation, Membership membership) {
+        Label registrationLabel = new Label(VaadinIcons.PENCIL.getHtml() + " 参加登録", ContentMode.HTML);
+        registrationLabel.setStyleName(ValoTheme.LABEL_H2);
+        addComponent(registrationLabel);
+
+        FormLayout form = new FormLayout();
+        form.setMargin(false);
+        addComponent(form);
+
+        Label nameLabel = new Label(membership.getName());
+        nameLabel.setCaption("名前");
+        form.addComponent(nameLabel);
+
+        Label emailLabel = new Label(membership.getEmail());
+        emailLabel.setCaption("E-mail");
+        form.addComponent(emailLabel);
+
+        TextArea commentArea = new TextArea("コメント");
+        commentArea.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
+        form.addComponent(commentArea);
+
+        Button submitButton = new Button("参加登録", click -> {
+            try {
+                attendanceService.register(membership, convocation, commentArea.getValue());
                 getUI().getNavigator().navigateTo(ThanksView.VIEW_NAME);
             } catch (RuntimeException e) {
                 ErrorView.show("登録に失敗しました。", e);

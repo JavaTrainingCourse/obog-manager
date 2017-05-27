@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author mikan
  * @since 0.1
@@ -33,6 +35,10 @@ public class MembershipService {
     @Nullable
     public static Membership getCurrentMembership() {
         return VaadinSession.getCurrent().getAttribute(Membership.class);
+    }
+
+    public List<Membership> getAll() {
+        return membershipRepository.findAll();
     }
 
     /**
@@ -56,6 +62,10 @@ public class MembershipService {
 
     public void logout() {
         endSession();
+    }
+
+    public long countMemberships() {
+        return membershipRepository.count();
     }
 
     private void beginSession(Membership membership) {

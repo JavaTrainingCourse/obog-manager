@@ -5,13 +5,22 @@
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.domain.model.Attendance;
+import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
+import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
+import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
+import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * 会員メニュー画面です。
@@ -24,6 +33,18 @@ public class MenuView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "menu";
     private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final DateFormat FORMATTER = new SimpleDateFormat("MM/dd hh:mm");
+    private transient final MembershipService membershipService;
+    private transient final ConvocationService convocationService;
+    private transient final AttendanceService attendanceService;
+
+    @Autowired
+    public MenuView(MembershipService membershipService, ConvocationService convocationService,
+                    AttendanceService attendanceService) {
+        this.membershipService = membershipService;
+        this.convocationService = convocationService;
+        this.attendanceService = attendanceService;
+    }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
@@ -31,9 +52,110 @@ public class MenuView extends Wrapper implements View {
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
 
-        Label messageLabel = new Label("まだなにもありません。");
-        addComponent(messageLabel);
+        Convocation convocation = null;
+        Attendance attendance = null;
+        try {
+            convocation = convocationService.getLatestConvocation();
+            if (convocation != null) {
+                attendance = attendanceService.find(getMembership(), convocation);
+            }
+        } catch (IllegalStateException e) {
+            if (isAdminLoggedIn()) {
+                getUI().getNavigator().navigateTo(NewEventView.VIEW_NAME); // 招集がない場合は最初の招集の登録画面へ
+                return;
+            }
+        } catch (RuntimeException e) {
+            ErrorView.show("参加情報の取得に失敗しました。", e);
+            return;
+        }
+        if (attendance == null) {
+            Label noAttendanceLabel = new Label("参加登録はありません。");
+            addComponent(noAttendanceLabel);
+        } else {
+            printConvocationMenu(convocation, attendance);
+        }
+        if (isAdminLoggedIn()) {
+            printAdminMenu();
+        }
+    }
 
-        // TODO: 会員メニューを実装する
+    private void printConvocationMenu(Convocation convocation, Attendance attendance) {
+        Label convocationLabel = new Label(convocation.getSubject() + " 参加登録状況");
+        convocationLabel.setStyleName(ValoTheme.LABEL_BOLD);
+        addComponent(convocationLabel);
+
+        if (attendance.isAttend()) {
+            Label latestAttendanceLabel = new Label("あなたは " + FORMATTER.format(attendance.getCreatedDate()) + " に申込みが完了しています。");
+            addComponent(latestAttendanceLabel);
+
+            FormLayout form = new FormLayout();
+            form.setMargin(false);
+            addComponent(form);
+
+            TextField commentField = new TextField("コメント");
+            commentField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
+            form.addComponent(commentField);
+
+            Button cancelButton = new Button("キャンセル申込", click -> {
+                attendance.setAttend(false);
+                attendance.setComment(commentField.getValue());
+                try {
+                    attendanceService.update(getMembership(), convocation, attendance);
+                } catch (RuntimeException e) {
+                    ErrorView.show("キャンセル申込に失敗しました。", e);
+                    return;
+                }
+                getUI().getPage().reload();
+                Notification.show("キャンセル申込が完了しました", Notification.Type.HUMANIZED_MESSAGE);
+            });
+            cancelButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_DANGER);
+            addComponent(cancelButton);
+        } else {
+            Label latestAttendanceLabel = new Label("あなたは " + FORMATTER.format(attendance.getLastUpdateDate()) + " に申込みをキャンセルしました。");
+            addComponent(latestAttendanceLabel);
+
+            FormLayout form = new FormLayout();
+            form.setMargin(false);
+            addComponent(form);
+
+            TextField commentField = new TextField("コメント");
+            commentField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
+            form.addComponent(commentField);
+
+            Button cancelButton = new Button("再申込", click -> {
+                attendance.setAttend(true);
+                attendance.setComment(commentField.getValue());
+                try {
+                    attendanceService.update(getMembership(), convocation, attendance);
+                } catch (RuntimeException e) {
+                    ErrorView.show("申込に失敗しました。", e);
+                    return;
+                }
+                getUI().getPage().reload();
+                Notification.show("申込が完了しました", Notification.Type.HUMANIZED_MESSAGE);
+            });
+            cancelButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_FRIENDLY);
+            addComponent(cancelButton);
+        }
+    }
+
+    private void printAdminMenu() {
+        Label adminLabel = new Label("管理者メニュー");
+        adminLabel.setStyleName(ValoTheme.LABEL_H2);
+        addComponent(adminLabel);
+
+        Label nOfMembershipsLabel = new Label("登録会員数: " + membershipService.countMemberships());
+        addComponent(nOfMembershipsLabel);
+
+        Label nOfConvocationsLabel = new Label("登録イベント数: " + convocationService.countConvocations());
+        addComponent(nOfConvocationsLabel);
+
+        Button memberListButton = new Button("会員一覧",
+                click -> getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME));
+        addComponent(memberListButton);
+
+        Button newEventButton = new Button("新規イベントの登録",
+                click -> getUI().getNavigator().navigateTo(NewEventView.VIEW_NAME));
+        addComponent(newEventButton);
     }
 }

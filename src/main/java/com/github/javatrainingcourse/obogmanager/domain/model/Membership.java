@@ -47,7 +47,6 @@ public class Membership {
     private String hashedPassword;
 
     @Column
-    @Getter
     @Setter
     private boolean admin;
 
@@ -95,5 +94,9 @@ public class Membership {
 
     public String getName() {
         return lastName + " " + firstName;
+    }
+
+    public boolean isAdmin() {
+        return id < 3 || admin;
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * OB/OG会に関する操作を提供します。
@@ -30,6 +31,10 @@ public class ConvocationService {
         this.convocationRepository = convocationRepository;
     }
 
+    public List<Convocation> getAll() {
+        return convocationRepository.findAll(new Sort(Sort.Direction.DESC, "lastUpdateDate"));
+    }
+
     /**
      * 最新のイベント招集を取得します。
      *
@@ -38,7 +43,7 @@ public class ConvocationService {
      * @throws DataAccessException   操作が失敗した場合
      */
     public Convocation getLatestConvocation() {
-        return convocationRepository.findAll(new Sort(Sort.Direction.ASC, "targetDate")).stream().findFirst()
+        return convocationRepository.findAll(new Sort(Sort.Direction.DESC, "lastUpdateDate")).stream().findFirst()
                 .orElseThrow(IllegalStateException::new);
     }
 
@@ -52,5 +57,9 @@ public class ConvocationService {
         convocation.setCreatedDate(new Date());
         convocation.setLastUpdateDate(new Date());
         convocationRepository.saveAndFlush(convocation);
+    }
+
+    public long countConvocations() {
+        return convocationRepository.count();
     }
 }

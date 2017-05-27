@@ -5,8 +5,11 @@
 package com.github.javatrainingcourse.obogmanager.domain.repository;
 
 import com.github.javatrainingcourse.obogmanager.domain.model.Attendance;
+import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author mikan
@@ -14,4 +17,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Attendance.AttendanceId> {
+    List<Attendance> findByConvocation(Convocation convocation);
 }
