@@ -6,7 +6,7 @@ OB/OG会の参加登録を受け付けるシステムです。
 
 https://java-obog.aomikan.org/
 
-([VULTR VPS](http://www.vultr.com/?ref=7053029) 東京リージョンで運用中)
+([VULTR VPS](http://www.vultr.com/?ref=7053029) 東京リージョン + [Microsoft Azure](https://azure.microsoft.com/ja-jp/) 西日本リージョンの冗長構成で運用中)
 
 ## 使っているもの
 
