@@ -187,7 +187,9 @@ public class AttendanceService {
         message.setText(request.getMembership().getName() + " さん\n\n" +
                 "パスワードリセットの要求を受け付けました。\n" +
                 "下記 URL から 24 時間以内にパスワードリセットを行ってください。\n\n" +
-                appUrl + "/#!" + ResetPasswordView.VIEW_NAME + "/" + request.getToken() + "\n\n" +
+                appUrl + "/#!" + ResetPasswordView.VIEW_NAME + "/" + request.getToken() + "\n" +
+                "※トップページにリダイレクトされてしまう場合は、トップページを開いた画面 (タブ) のアドレス欄に" +
+                "上記 URL を張り付けて移動してください。\n\n" +
                 "本メールに関するお問合せ先: " + appReply + "\n" +
                 "Java研修 Go研修 OB・OG会");
         mailSender.send(message);

@@ -4,7 +4,9 @@ OB/OG会の参加登録を受け付けるシステムです。
 
 ## 本番環境
 
-(もうちょっと待ってね)
+https://java-obog.aomikan.org/
+
+([VULTR VPS](http://www.vultr.com/?ref=7053029) 東京リージョンで運用中)
 
 ## 使っているもの
 
