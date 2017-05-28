@@ -26,12 +26,7 @@ public class Wrapper extends VerticalLayout {
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
         setComponentAlignment(titleLabel, Alignment.MIDDLE_CENTER);
-
-        Label alphaTestingLabel = new Label("本システムは現在パブリックアルファテスト中です。入力データは正式運用までに破棄される可能性があります。");
-        alphaTestingLabel.setStyleName(ValoTheme.LABEL_FAILURE);
-        addComponent(alphaTestingLabel);
-        setComponentAlignment(alphaTestingLabel, Alignment.MIDDLE_CENTER);
-
+        
         Membership membership = MembershipService.getCurrentMembership();
         if (membership != null) {
             HorizontalLayout userInfoArea = new HorizontalLayout();

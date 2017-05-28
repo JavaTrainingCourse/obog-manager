@@ -51,7 +51,6 @@ public class MemberListView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-
         Label titleLabel = new Label("会員一覧");
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
@@ -117,6 +116,9 @@ public class MemberListView extends Wrapper implements View {
         membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
         membershipGrid.addColumn(MemberInfo::getName).setCaption("名前");
         membershipGrid.addColumn(MemberInfo::getEmail).setCaption("E-mail");
+        membershipGrid.addColumn(MemberInfo::getJavaTerm).setCaption("Java研修");
+        membershipGrid.addColumn(MemberInfo::getJava8Term).setCaption("Java8研修");
+        membershipGrid.addColumn(MemberInfo::getGoTerm).setCaption("Go研修");
         membershipGrid.setWidth(100, Unit.PERCENTAGE);
         membershipGrid.setHeightByRows(memberships.size());
         addComponent(membershipGrid);
@@ -142,7 +144,6 @@ public class MemberListView extends Wrapper implements View {
         membershipGrid.setWidth(100, Unit.PERCENTAGE);
         membershipGrid.setHeightByRows(attendances.size());
         addComponent(membershipGrid);
-
     }
 
     @Getter
@@ -154,12 +155,18 @@ public class MemberListView extends Wrapper implements View {
         private String attend;
         private String comment;
         private Date entryDate;
+        private String javaTerm;
+        private String java8Term;
+        private String goTerm;
 
         private static MemberInfo from(Membership membership) {
             MemberInfo info = new MemberInfo();
             info.membershipId = membership.getId();
             info.name = membership.getName();
             info.email = membership.getEmail();
+            info.javaTerm = membership.getJavaTerm() == -1 ? "" : "✔";
+            info.java8Term = membership.getJava8Term() == -1 ? "" : "✔";
+            info.goTerm = membership.getGoTerm() == -1 ? "" : "✔";
             return info;
         }
 

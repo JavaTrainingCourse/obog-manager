@@ -46,3 +46,12 @@ dependencyManagement {
         mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
     }
 }
+
+war {
+    baseName = 'obog-manager'
+    archiveName = baseName + "." + extension
+}
+
+springBoot {
+    executable = true
+}

@@ -3,9 +3,10 @@
 /classes/
 !gradle/wrapper/gradle-wrapper.jar
 
-# Hide production profiles
+# Hide production profiles and deploy scripts
 /src/main/resources/*.yml
 !/src/main/resources/application.yml
+deploy-*.sh
 
 ### STS ###
 .apt_generated

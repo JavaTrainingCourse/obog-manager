@@ -17,5 +17,6 @@ import java.util.List;
  */
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Attendance.AttendanceId> {
+    Attendance findById(Attendance.AttendanceId id);
     List<Attendance> findByConvocation(Convocation convocation);
 }

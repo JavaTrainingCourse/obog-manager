@@ -44,7 +44,7 @@ public class NewEventView extends Wrapper implements View {
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
 
-        if (!isAdminLoggedIn()) {
+        if (!isAdminLoggedIn() && convocationService.countConvocations() != 0) {
             ErrorView.show("管理者ユーザーでのログインが必要です。", null);
             return;
         }
