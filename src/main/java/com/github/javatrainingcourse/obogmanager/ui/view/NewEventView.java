@@ -74,6 +74,7 @@ public class NewEventView extends Wrapper implements View {
         TextArea descriptionArea = new TextArea("案内文 (Markdown)");
         descriptionArea.setRequiredIndicatorVisible(true);
         descriptionArea.setWidth(100, Unit.PERCENTAGE);
+        descriptionArea.setHeight(400, Unit.PIXELS);
         form.addComponent(descriptionArea);
         binder.forField(descriptionArea).withValidator(new StringLengthValidator("入力が長すぎます", 0, 1024))
                 .bind(Convocation::getDescription, Convocation::setDescription);

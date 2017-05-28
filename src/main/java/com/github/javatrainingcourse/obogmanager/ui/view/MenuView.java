@@ -11,7 +11,10 @@ import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceServic
 import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
+import com.github.javatrainingcourse.obogmanager.ui.layout.AboutWindow;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -52,10 +55,9 @@ public class MenuView extends Wrapper implements View {
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
 
-        Convocation convocation = null;
         Attendance attendance = null;
         try {
-            convocation = convocationService.getLatestConvocation();
+            Convocation convocation = convocationService.getLatestConvocation();
             if (convocation != null) {
                 attendance = attendanceService.find(getMembership(), convocation);
             }
@@ -72,70 +74,99 @@ public class MenuView extends Wrapper implements View {
             Label noAttendanceLabel = new Label("参加登録はありません。");
             addComponent(noAttendanceLabel);
         } else {
-            printConvocationMenu(convocation, attendance);
+            printConvocationMenu(attendance);
         }
         if (isAdminLoggedIn()) {
             printAdminMenu();
         }
+
+        HorizontalLayout buttonArea = new HorizontalLayout();
+        buttonArea.setSpacing(true);
+        addComponent(buttonArea);
+        setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
+
+        Button facebookGroupButton = new Button("Facebook グループ", click -> UI.getCurrent().getPage()
+                .setLocation("https://www.facebook.com/groups/351472538254785/"));
+        facebookGroupButton.setIcon(VaadinIcons.COMMENTS);
+        buttonArea.addComponent(facebookGroupButton);
+
+        Button aboutAppButton = new Button("このアプリについて", click -> {
+            AboutWindow aboutWindow = new AboutWindow();
+            UI.getCurrent().addWindow(aboutWindow);
+        });
+        aboutAppButton.setIcon(VaadinIcons.INFO_CIRCLE);
+        buttonArea.addComponent(aboutAppButton);
     }
 
-    private void printConvocationMenu(Convocation convocation, Attendance attendance) {
-        Label convocationLabel = new Label(convocation.getSubject() + " 参加登録状況");
-        convocationLabel.setStyleName(ValoTheme.LABEL_BOLD);
+    private void printConvocationMenu(Attendance attendance) {
+        Label convocationLabel = new Label(attendance.getConvocation().getSubject() + " 参加登録状況");
+        convocationLabel.setStyleName(ValoTheme.LABEL_H4);
         addComponent(convocationLabel);
 
         if (attendance.isAttend()) {
             Label latestAttendanceLabel = new Label("あなたは " + FORMATTER.format(attendance.getCreatedDate()) + " に申込みが完了しています。");
             addComponent(latestAttendanceLabel);
+        } else {
+            Label latestAttendanceLabel = new Label("あなたは " + FORMATTER.format(attendance.getLastUpdateDate()) + " に申込みをキャンセルしました。");
+            addComponent(latestAttendanceLabel);
+        }
 
-            FormLayout form = new FormLayout();
-            form.setMargin(false);
-            addComponent(form);
+        FormLayout form = new FormLayout();
+        form.setMargin(false);
+        addComponent(form);
 
-            TextField commentField = new TextField("コメント");
-            commentField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
-            form.addComponent(commentField);
+        TextArea commentArea = new TextArea("コメント", attendance.getComment());
+        commentArea.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
+        form.addComponent(commentArea);
 
+        HorizontalLayout updateButtonArea = new HorizontalLayout();
+        updateButtonArea.setSpacing(true);
+        addComponent(updateButtonArea);
+
+        Button commentUpdateButton = new Button("コメント修正", click -> {
+            attendance.setComment(commentArea.getValue());
+            try {
+                attendanceService.updateComment(attendance);
+            } catch (RuntimeException e) {
+                ErrorView.show("コメント修正に失敗しました。", e);
+                return;
+            }
+            getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
+            SuccessNotification.show("コメント修正が完了しました");
+        });
+        commentUpdateButton.setStyleName(ValoTheme.BUTTON_SMALL);
+        updateButtonArea.addComponent(commentUpdateButton);
+
+        if (attendance.isAttend()) {
             Button cancelButton = new Button("キャンセル申込", click -> {
                 attendance.setAttend(false);
-                attendance.setComment(commentField.getValue());
+                attendance.setComment(commentArea.getValue());
                 try {
-                    attendanceService.update(getMembership(), convocation, attendance);
+                    attendanceService.update(attendance);
                 } catch (RuntimeException e) {
                     ErrorView.show("キャンセル申込に失敗しました。", e);
                     return;
                 }
-                getUI().getPage().reload();
-                Notification.show("キャンセル申込が完了しました", Notification.Type.HUMANIZED_MESSAGE);
+                getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
+                SuccessNotification.show("キャンセル申込が完了しました");
             });
             cancelButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_DANGER);
-            addComponent(cancelButton);
+            updateButtonArea.addComponent(cancelButton);
         } else {
-            Label latestAttendanceLabel = new Label("あなたは " + FORMATTER.format(attendance.getLastUpdateDate()) + " に申込みをキャンセルしました。");
-            addComponent(latestAttendanceLabel);
-
-            FormLayout form = new FormLayout();
-            form.setMargin(false);
-            addComponent(form);
-
-            TextField commentField = new TextField("コメント");
-            commentField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
-            form.addComponent(commentField);
-
-            Button cancelButton = new Button("再申込", click -> {
+            Button reEntryButton = new Button("再申込", click -> {
                 attendance.setAttend(true);
-                attendance.setComment(commentField.getValue());
+                attendance.setComment(commentArea.getValue());
                 try {
-                    attendanceService.update(getMembership(), convocation, attendance);
+                    attendanceService.update(attendance);
                 } catch (RuntimeException e) {
-                    ErrorView.show("申込に失敗しました。", e);
+                    ErrorView.show("再申込に失敗しました。", e);
                     return;
                 }
-                getUI().getPage().reload();
-                Notification.show("申込が完了しました", Notification.Type.HUMANIZED_MESSAGE);
+                getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
+                SuccessNotification.show("再申込が完了しました");
             });
-            cancelButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_FRIENDLY);
-            addComponent(cancelButton);
+            reEntryButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_FRIENDLY);
+            updateButtonArea.addComponent(reEntryButton);
         }
     }
 

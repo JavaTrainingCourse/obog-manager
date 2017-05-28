@@ -89,15 +89,22 @@ public class AttendanceService {
                 .membershipId(membership.getId()).convocationId(convocation.getId()).build());
     }
 
-    public void update(Membership membership, Convocation convocation, Attendance attendance) {
+    public void updateComment(Attendance attendance) {
         attendance.setLastUpdateDate(new Date());
-        log.info("参加更新: " + membership.getName() + ": " + attendance.getAttend() +
+        log.info("参加更新: " + attendance.getMembership().getName() + ": " + attendance.getAttend() +
+                " [" + attendance.getComment() + "]");
+        attendanceRepository.saveAndFlush(attendance);
+    }
+
+    public void update(Attendance attendance) {
+        attendance.setLastUpdateDate(new Date());
+        log.info("参加更新: " + attendance.getMembership().getName() + ": " + attendance.getAttend() +
                 " [" + attendance.getComment() + "]");
         attendanceRepository.saveAndFlush(attendance);
         if (attendance.getAttend()) {
-            sendAttendMail(membership, convocation);
+            sendAttendMail(attendance.getMembership(), attendance.getConvocation());
         } else {
-            sendCancelMail(membership, convocation);
+            sendCancelMail(attendance.getMembership(), attendance.getConvocation());
         }
     }
 

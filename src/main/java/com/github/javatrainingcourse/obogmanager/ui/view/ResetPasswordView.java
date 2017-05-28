@@ -8,10 +8,10 @@ import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.model.PasswordResetRequest;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.Position;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -139,10 +139,7 @@ public class ResetPasswordView extends Wrapper implements View {
             try {
                 attendanceService.updatePassword(request, passwordField.getValue());
                 getUI().getNavigator().navigateTo(LoginView.VIEW_NAME);
-                Notification notification = new Notification("パスワード変更が完了しました。");
-                notification.setPosition(Position.TOP_CENTER);
-                notification.setStyleName(ValoTheme.NOTIFICATION_SUCCESS);
-                notification.show(UI.getCurrent().getPage());
+                SuccessNotification.show("パスワード変更が完了しました");
             } catch (RuntimeException e) {
                 ErrorView.show("パスワード変更に失敗しました。", e);
             }

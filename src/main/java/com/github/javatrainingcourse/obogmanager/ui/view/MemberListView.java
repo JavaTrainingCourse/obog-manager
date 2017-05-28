@@ -60,17 +60,24 @@ public class MemberListView extends Wrapper implements View {
             return;
         }
 
+        // パスパラメーターを取得
+        long cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
+                .mapToLong(Long::parseLong).findFirst().orElse(-1);
+
         List<Convocation> convocations;
         try {
+            String allMembersItem = "会員一覧";
             convocations = convocationService.getAll();
             List<String> selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
-            selections.add(0, "会員一覧");
+            selections.add(0, allMembersItem);
             ComboBox<String> convocationComboBox = new ComboBox<>();
             convocationComboBox.setEmptySelectionAllowed(false);
             convocationComboBox.setTextInputAllowed(false);
             convocationComboBox.setItems(selections);
+            convocationComboBox.setValue(cId == -1 ? allMembersItem : convocations.stream()
+                    .filter(c -> c.getId() == cId).map(Convocation::getSubject).findAny().orElse(""));
             convocationComboBox.addValueChangeListener(e -> {
-                if (e.getValue().equals("会員一覧")) {
+                if (e.getValue().equals(allMembersItem)) {
                     getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME);
                 } else {
                     long id = convocations.get(selections.indexOf(e.getValue()) - 1).getId();
@@ -83,9 +90,6 @@ public class MemberListView extends Wrapper implements View {
             return;
         }
 
-        // パスパラメーターを取得
-        long cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
-                .mapToLong(Long::parseLong).findFirst().orElse(-1);
         if (cId == -1) {
             printAllMembers();
         } else {
@@ -142,7 +146,9 @@ public class MemberListView extends Wrapper implements View {
         membershipGrid.addColumn(MemberInfo::getComment).setCaption("コメント");
         membershipGrid.addColumn(MemberInfo::getEntryDate).setCaption("更新日時");
         membershipGrid.setWidth(100, Unit.PERCENTAGE);
-        membershipGrid.setHeightByRows(attendances.size());
+        if (!attendances.isEmpty()) {
+            membershipGrid.setHeightByRows(attendances.size());
+        }
         addComponent(membershipGrid);
     }
 
