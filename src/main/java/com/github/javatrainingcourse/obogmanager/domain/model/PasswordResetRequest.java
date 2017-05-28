@@ -30,7 +30,7 @@ import java.util.UUID;
 public class PasswordResetRequest {
 
     @Id
-    @Column
+    @Column(length = 64)
     @Getter
     private String token;
 
