@@ -54,6 +54,7 @@ public class LoginView extends Wrapper implements View {
 
         TextField emailField = new TextField("E-mail アドレス");
         emailField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
+        emailField.focus();
         form.addComponent(emailField);
 
         PasswordField passwordField = new PasswordField("パスワード");

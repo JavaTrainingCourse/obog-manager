@@ -21,6 +21,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -82,8 +83,8 @@ public class MenuView extends Wrapper implements View {
         addComponent(convocationLabel);
 
         try {
-            long count = attendanceService.countAttendees(convocation);
-            Label attendeesLabel = new Label("現在 " + count + " 名が参加登録しています。");
+            Pair<Integer, Integer> counts = attendanceService.countAttendees(convocation);
+            Label attendeesLabel = new Label("現在 " + counts.getFirst() + " 名が参加登録しています。");
             addComponent(attendeesLabel);
         } catch (RuntimeException e) {
             ErrorView.show("参加数の取得に失敗しました。", e);

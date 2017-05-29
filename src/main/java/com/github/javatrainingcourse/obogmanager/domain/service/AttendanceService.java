@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 会員に関する操作を提供します。
@@ -67,9 +70,10 @@ public class AttendanceService {
         return attendanceRepository.findByConvocation(convocation);
     }
 
-    public long countAttendees(Convocation convocation) {
-        return attendanceRepository.findByConvocation(convocation).stream()
-                .filter(Attendance::isAttend).count();
+    public Pair<Integer, Integer> countAttendees(Convocation convocation) {
+        Map<Boolean, List<Attendance>> result = attendanceRepository.findByConvocation(convocation).stream()
+                .collect(Collectors.groupingBy(Attendance::isAttend));
+        return Pair.of(result.get(true).size(), result.get(false).size()); // yes, no
     }
 
     public void register(Membership membership, Convocation convocation, String comment) {
