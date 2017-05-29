@@ -53,14 +53,12 @@ public class ErrorView extends Wrapper implements View {
         VaadinSession session = VaadinSession.getCurrent();
         String paramMessage = (String) session.getAttribute(PARAM_MESSAGE);
         if (paramMessage != null) {
-            Label paramMessageLabel = new Label(paramMessage);
-            addComponent(paramMessageLabel);
+            addComponent(new Label(paramMessage));
         }
         session.setAttribute(PARAM_MESSAGE, null);
         Throwable paramThrowable = (Throwable) session.getAttribute(PARAM_THROWABLE);
         if (paramThrowable != null) {
-            Label paramThrowableLabel = new Label(throwable2html(paramThrowable), ContentMode.HTML);
-            addComponent(paramThrowableLabel);
+            addComponent(new Label(throwable2html(paramThrowable), ContentMode.HTML));
         }
         session.setAttribute(PARAM_THROWABLE, null);
         log.error(paramMessage, paramThrowable);

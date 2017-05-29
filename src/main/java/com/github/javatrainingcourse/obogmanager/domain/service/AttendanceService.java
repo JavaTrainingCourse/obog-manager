@@ -73,7 +73,9 @@ public class AttendanceService {
     public Pair<Integer, Integer> countAttendees(Convocation convocation) {
         Map<Boolean, List<Attendance>> result = attendanceRepository.findByConvocation(convocation).stream()
                 .collect(Collectors.groupingBy(Attendance::isAttend));
-        return Pair.of(result.get(true).size(), result.get(false).size()); // yes, no
+        List<Attendance> attendees = result.get(true);
+        List<Attendance> cancels = result.get(false);
+        return Pair.of(attendees != null ? attendees.size() : 0, cancels != null ? cancels.size() : 0); // yes, no
     }
 
     public void register(Membership membership, Convocation convocation, String comment) {

@@ -192,15 +192,13 @@ public class MenuView extends Wrapper implements View {
         adminLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(adminLabel);
 
-        Label nOfMembershipsLabel = new Label("登録会員数: " + membershipService.countMemberships());
-        addComponent(nOfMembershipsLabel);
-
-        Label nOfConvocationsLabel = new Label("登録イベント数: " + convocationService.countConvocations());
-        addComponent(nOfConvocationsLabel);
-
-        Button memberListButton = new Button("会員一覧",
+        Button memberListButton = new Button("会員一覧 (" + membershipService.countMemberships() + ")",
                 click -> getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME));
         addComponent(memberListButton);
+
+        Button updateEventButton = new Button("登録済イベント (" + convocationService.countConvocations() + ") の編集",
+                click -> getUI().getNavigator().navigateTo(EditEventView.VIEW_NAME));
+        addComponent(updateEventButton);
 
         Button newEventButton = new Button("新規イベントの登録",
                 click -> getUI().getNavigator().navigateTo(NewEventView.VIEW_NAME));

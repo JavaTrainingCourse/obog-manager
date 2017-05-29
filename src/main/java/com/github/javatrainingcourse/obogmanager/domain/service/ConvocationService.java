@@ -59,6 +59,21 @@ public class ConvocationService {
         convocationRepository.saveAndFlush(convocation);
     }
 
+    /**
+     * イベント招集を更新します。
+     *
+     * @param convocation ベント招集
+     * @throws IllegalArgumentException 存在しないイベント招集の場合
+     * @throws DataAccessException      操作が失敗した場合
+     */
+    public void update(Convocation convocation) {
+        if (!convocationRepository.exists(convocation.getId())) {
+            throw new IllegalArgumentException("No such convocation: " + convocation.getId());
+        }
+        convocation.setLastUpdateDate(new Date());
+        convocationRepository.saveAndFlush(convocation);
+    }
+
     public long countConvocations() {
         return convocationRepository.count();
     }

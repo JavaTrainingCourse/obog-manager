@@ -48,8 +48,7 @@ public class LogoutConfirmView extends Wrapper implements View {
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
 
-        Label descriptionLabel = new Label("ログアウトします: ");
-        addComponent(descriptionLabel);
+        addComponent(new Label("ログアウトします。"));
 
         HorizontalLayout buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);

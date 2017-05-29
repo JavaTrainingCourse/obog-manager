@@ -66,30 +66,30 @@ public class MemberListView extends Wrapper implements View {
 
         List<Convocation> convocations;
         try {
-            String allMembersItem = "会員一覧";
             convocations = convocationService.getAll();
-            List<String> selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
-            selections.add(0, allMembersItem);
-            ComboBox<String> convocationComboBox = new ComboBox<>();
-            convocationComboBox.setEmptySelectionAllowed(false);
-            convocationComboBox.setTextInputAllowed(false);
-            convocationComboBox.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
-            convocationComboBox.setItems(selections);
-            convocationComboBox.setValue(cId == -1 ? allMembersItem : convocations.stream()
-                    .filter(c -> c.getId() == cId).map(Convocation::getSubject).findAny().orElse(""));
-            convocationComboBox.addValueChangeListener(e -> {
-                if (e.getValue().equals(allMembersItem)) {
-                    getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME);
-                } else {
-                    long id = convocations.get(selections.indexOf(e.getValue()) - 1).getId();
-                    getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME + "/" + id);
-                }
-            });
-            addComponent(convocationComboBox);
         } catch (RuntimeException e) {
             ErrorView.show("イベント招集一覧の取得に失敗しました。", e);
             return;
         }
+        String allMembersItem = "会員一覧";
+        List<String> selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
+        selections.add(0, allMembersItem);
+        ComboBox<String> convocationComboBox = new ComboBox<>();
+        convocationComboBox.setEmptySelectionAllowed(false);
+        convocationComboBox.setTextInputAllowed(false);
+        convocationComboBox.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
+        convocationComboBox.setItems(selections);
+        convocationComboBox.setValue(cId == -1 ? allMembersItem : convocations.stream()
+                .filter(c -> c.getId() == cId).map(Convocation::getSubject).findAny().orElse(""));
+        convocationComboBox.addValueChangeListener(e -> {
+            if (e.getValue().equals(allMembersItem)) {
+                getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME);
+            } else {
+                long id = convocations.get(selections.indexOf(e.getValue()) - 1).getId();
+                getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME + "/" + id);
+            }
+        });
+        addComponent(convocationComboBox);
 
         if (cId == -1) {
             printAllMembers();
@@ -115,7 +115,6 @@ public class MemberListView extends Wrapper implements View {
             ErrorView.show("会員一覧の取得に失敗しました。", e);
             return;
         }
-
         Grid<MemberInfo> membershipGrid = new Grid<>();
         membershipGrid.setItems(memberships.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
@@ -137,7 +136,6 @@ public class MemberListView extends Wrapper implements View {
             ErrorView.show("申込一覧の取得に失敗しました。", e);
             return;
         }
-
         Grid<MemberInfo> membershipGrid = new Grid<>();
         membershipGrid.setItems(attendances.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");

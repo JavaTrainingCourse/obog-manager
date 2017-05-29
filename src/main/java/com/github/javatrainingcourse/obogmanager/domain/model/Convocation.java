@@ -61,7 +61,14 @@ public class Convocation {
         targetDate = java.sql.Date.valueOf(date);
     }
 
-    public String getDescription() {
+    public String getDescriptionAsMarkdown() {
+        if (description == null) {
+            return null;
+        }
+        return description;
+    }
+
+    public String getDescriptionAsHtml() {
         if (description == null) {
             return null;
         }

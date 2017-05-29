@@ -59,8 +59,7 @@ public class FrontView extends Wrapper implements View {
                     ContentMode.HTML);
             subjectLabel.setStyleName(ValoTheme.LABEL_H2);
             addComponent(subjectLabel);
-            Label announceLabel = new Label(latestEvent.getDescription(), ContentMode.HTML);
-            addComponent(announceLabel);
+            addComponent(new Label(latestEvent.getDescriptionAsHtml(), ContentMode.HTML));
         } catch (IllegalStateException e) {
             getUI().getNavigator().navigateTo(NewEventView.VIEW_NAME);
             return;
@@ -73,8 +72,7 @@ public class FrontView extends Wrapper implements View {
         if (latestEvent.getTargetDate().isBefore(LocalDate.now())) {
             log.info("latest: " + latestEvent.getTargetDate());
             log.info("now:    " + LocalDate.now());
-            Label expiredLabel = new Label(latestEvent.getSubject() + "は終了しました。次回の開催をお待ちください。");
-            addComponent(expiredLabel);
+            addComponent(new Label(latestEvent.getSubject() + "は終了しました。次回の開催をお待ちください。"));
             printMenuSection();
             return;
         }

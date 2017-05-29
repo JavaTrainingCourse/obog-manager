@@ -77,7 +77,7 @@ public class NewEventView extends Wrapper implements View {
         descriptionArea.setHeight(400, Unit.PIXELS);
         form.addComponent(descriptionArea);
         binder.forField(descriptionArea).withValidator(new StringLengthValidator("入力が長すぎます", 0, 1024))
-                .bind(Convocation::getDescription, Convocation::setDescription);
+                .bind(Convocation::getDescriptionAsMarkdown, Convocation::setDescription);
 
         HorizontalLayout buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
