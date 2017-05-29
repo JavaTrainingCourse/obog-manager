@@ -11,8 +11,10 @@ import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -42,7 +44,7 @@ public class EditEventView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label("イベント編集");
+        Label titleLabel = new Label(VaadinIcons.TEXT_INPUT.getHtml() + " イベント編集", ContentMode.HTML);
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
 

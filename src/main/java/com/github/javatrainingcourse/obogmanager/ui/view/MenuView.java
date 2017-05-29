@@ -17,6 +17,7 @@ import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -52,9 +53,25 @@ public class MenuView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label("会員メニュー");
+        if (!isLoggedIn()) {
+            getUI().getNavigator().navigateTo(LoginView.VIEW_NAME);
+            return;
+        }
+
+        Label titleLabel = new Label(VaadinIcons.USER.getHtml() + " 会員メニュー", ContentMode.HTML);
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
+
+        HorizontalLayout membershipMenuArea = new HorizontalLayout();
+        addComponent(membershipMenuArea);
+        Button memberListButton = new Button("会員名簿 (" + membershipService.countMemberships() + ")",
+                click -> getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME));
+        memberListButton.setIcon(VaadinIcons.BULLETS);
+        membershipMenuArea.addComponent(memberListButton);
+        Button editMembershipButton = new Button("会員情報編集",
+                click -> getUI().getNavigator().navigateTo(EditMembershipView.VIEW_NAME));
+        editMembershipButton.setIcon(VaadinIcons.EDIT);
+        membershipMenuArea.addComponent(editMembershipButton);
 
         Convocation convocation;
         Attendance attendance;
@@ -192,16 +209,25 @@ public class MenuView extends Wrapper implements View {
         adminLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(adminLabel);
 
-        Button memberListButton = new Button("会員一覧 (" + membershipService.countMemberships() + ")",
-                click -> getUI().getNavigator().navigateTo(MemberListView.VIEW_NAME));
-        addComponent(memberListButton);
+        Label nOfMembershipsLabel = new Label("登録会員数: " + membershipService.countMemberships());
+        addComponent(nOfMembershipsLabel);
 
-        Button updateEventButton = new Button("登録済イベント (" + convocationService.countConvocations() + ") の編集",
+        Label nOfConvocationsLabel = new Label("登録イベント数: " + convocationService.countConvocations());
+        addComponent(nOfConvocationsLabel);
+
+        Button requestListButton = new Button("会員・参加者一覧 (管理者用)",
+                click -> getUI().getNavigator().navigateTo(RequestListView.VIEW_NAME));
+        requestListButton.setIcon(VaadinIcons.USERS);
+        addComponent(requestListButton);
+
+        Button updateEventButton = new Button("登録済イベントの編集",
                 click -> getUI().getNavigator().navigateTo(EditEventView.VIEW_NAME));
+        updateEventButton.setIcon(VaadinIcons.TEXT_INPUT);
         addComponent(updateEventButton);
 
         Button newEventButton = new Button("新規イベントの登録",
                 click -> getUI().getNavigator().navigateTo(NewEventView.VIEW_NAME));
+        newEventButton.setIcon(VaadinIcons.PLUS);
         addComponent(newEventButton);
     }
 }
