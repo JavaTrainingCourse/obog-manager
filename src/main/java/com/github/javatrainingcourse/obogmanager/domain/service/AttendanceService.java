@@ -13,6 +13,7 @@ import com.github.javatrainingcourse.obogmanager.domain.repository.MembershipRep
 import com.github.javatrainingcourse.obogmanager.domain.repository.PasswordResetRequestRepository;
 import com.github.javatrainingcourse.obogmanager.ui.view.ResetPasswordView;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -66,6 +67,11 @@ public class AttendanceService {
         return attendanceRepository.findByConvocation(convocation);
     }
 
+    public long countAttendees(Convocation convocation) {
+        return attendanceRepository.findByConvocation(convocation).stream()
+                .filter(Attendance::isAttend).count();
+    }
+
     public void register(Membership membership, Convocation convocation, String comment) {
         Attendance attendance = new Attendance(convocation, membership, comment);
         attendanceRepository.saveAndFlush(attendance);
@@ -81,6 +87,7 @@ public class AttendanceService {
         sendAttendMail(membership, convocation);
     }
 
+    @Nullable
     public Attendance find(Membership membership, Convocation convocation) {
         if (membership == null || convocation == null) {
             return null;

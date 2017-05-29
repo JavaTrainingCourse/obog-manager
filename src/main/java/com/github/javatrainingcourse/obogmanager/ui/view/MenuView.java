@@ -55,26 +55,46 @@ public class MenuView extends Wrapper implements View {
         titleLabel.setStyleName(ValoTheme.LABEL_H2);
         addComponent(titleLabel);
 
-        Attendance attendance = null;
+        Convocation convocation;
+        Attendance attendance;
         try {
-            Convocation convocation = convocationService.getLatestConvocation();
-            if (convocation != null) {
-                attendance = attendanceService.find(getMembership(), convocation);
+            convocation = convocationService.getLatestConvocation();
+            if (convocation == null) {
+                if (isAdminLoggedIn()) {
+                    printAdminMenu();
+                }
+                return;
             }
+            attendance = attendanceService.find(getMembership(), convocation);
         } catch (IllegalStateException e) {
             if (isAdminLoggedIn()) {
                 getUI().getNavigator().navigateTo(NewEventView.VIEW_NAME); // 招集がない場合は最初の招集の登録画面へ
-                return;
             }
+            addComponent(new Label("まだイベント招集が登録されていません。"));
+            return;
         } catch (RuntimeException e) {
             ErrorView.show("参加情報の取得に失敗しました。", e);
             return;
         }
+
+        Label convocationLabel = new Label(convocation.getSubject() + " 参加登録状況");
+        convocationLabel.setStyleName(ValoTheme.LABEL_H3);
+        addComponent(convocationLabel);
+
+        try {
+            long count = attendanceService.countAttendees(convocation);
+            Label attendeesLabel = new Label("現在 " + count + " 名が参加登録しています。");
+            addComponent(attendeesLabel);
+        } catch (RuntimeException e) {
+            ErrorView.show("参加数の取得に失敗しました。", e);
+            return;
+        }
+
         if (attendance == null) {
-            Label noAttendanceLabel = new Label("参加登録はありません。");
+            Label noAttendanceLabel = new Label("あなたの参加登録はまだありません。");
             addComponent(noAttendanceLabel);
         } else {
-            printConvocationMenu(attendance);
+            printAttendance(attendance);
         }
         if (isAdminLoggedIn()) {
             printAdminMenu();
@@ -98,11 +118,7 @@ public class MenuView extends Wrapper implements View {
         buttonArea.addComponent(aboutAppButton);
     }
 
-    private void printConvocationMenu(Attendance attendance) {
-        Label convocationLabel = new Label(attendance.getConvocation().getSubject() + " 参加登録状況");
-        convocationLabel.setStyleName(ValoTheme.LABEL_H4);
-        addComponent(convocationLabel);
-
+    private void printAttendance(Attendance attendance) {
         if (attendance.isAttend()) {
             Label latestAttendanceLabel = new Label("あなたは " + FORMATTER.format(attendance.getCreatedDate()) + " に申込みが完了しています。");
             addComponent(latestAttendanceLabel);

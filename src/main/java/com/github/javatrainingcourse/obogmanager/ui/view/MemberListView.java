@@ -73,6 +73,7 @@ public class MemberListView extends Wrapper implements View {
             ComboBox<String> convocationComboBox = new ComboBox<>();
             convocationComboBox.setEmptySelectionAllowed(false);
             convocationComboBox.setTextInputAllowed(false);
+            convocationComboBox.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
             convocationComboBox.setItems(selections);
             convocationComboBox.setValue(cId == -1 ? allMembersItem : convocations.stream()
                     .filter(c -> c.getId() == cId).map(Convocation::getSubject).findAny().orElse(""));
