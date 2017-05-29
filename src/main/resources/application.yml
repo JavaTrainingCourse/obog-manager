@@ -21,6 +21,10 @@ spring:
     properties.mail.smtp:auth: true
     properties.mail.smtp.starttls.enable: true
 
+vaadin:
+  servlet:
+    production-mode: false
+
 logging:
   level:
     org.springframework: INFO

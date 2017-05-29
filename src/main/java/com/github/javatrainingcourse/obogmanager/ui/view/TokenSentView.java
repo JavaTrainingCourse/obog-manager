@@ -45,7 +45,7 @@ public class TokenSentView extends Wrapper implements View {
         Label addressLabel = new Label("しばらく待ってもメールが来ない場合は、お手数ですが " + appReply + " までご連絡ください。");
         addressLabel.setCaption("お願い");
         addressLabel.setIcon(VaadinIcons.LIGHTBULB);
-        addComponent(messageLabel);
+        addComponent(addressLabel);
 
         Button homeButton = new Button("ホーム", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
         addComponent(homeButton);
