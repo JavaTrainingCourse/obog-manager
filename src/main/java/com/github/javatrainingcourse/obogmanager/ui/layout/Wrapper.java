@@ -7,7 +7,9 @@ package com.github.javatrainingcourse.obogmanager.ui.layout;
 import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
+import com.github.javatrainingcourse.obogmanager.ui.view.LoginView;
 import com.github.javatrainingcourse.obogmanager.ui.view.LogoutConfirmView;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -40,6 +42,18 @@ public class Wrapper extends VerticalLayout {
             Button logoutButton = new Button("ログアウト",
                     click -> getUI().getNavigator().navigateTo(LogoutConfirmView.VIEW_NAME));
             logoutButton.setStyleName(ValoTheme.BUTTON_SMALL);
+            logoutButton.setIcon(VaadinIcons.SIGN_OUT);
+            userInfoArea.addComponent(logoutButton);
+            userInfoArea.setComponentAlignment(logoutButton, Alignment.MIDDLE_LEFT);
+        } else {
+            HorizontalLayout userInfoArea = new HorizontalLayout();
+            userInfoArea.setSpacing(true);
+            addComponent(userInfoArea);
+
+            Button logoutButton = new Button("会員ログイン",
+                    click -> getUI().getNavigator().navigateTo(LoginView.VIEW_NAME));
+            logoutButton.setStyleName(ValoTheme.BUTTON_SMALL);
+            logoutButton.setIcon(VaadinIcons.USER);
             userInfoArea.addComponent(logoutButton);
             userInfoArea.setComponentAlignment(logoutButton, Alignment.MIDDLE_LEFT);
         }

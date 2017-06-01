@@ -12,14 +12,16 @@ import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceServic
 import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Grid;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,7 +36,7 @@ import java.util.stream.Stream;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = RequestListView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = RequestListView.VIEW_NAME)
 public class RequestListView extends Wrapper implements View {
 
     static final String VIEW_NAME = "request-list";
@@ -57,10 +59,7 @@ public class RequestListView extends Wrapper implements View {
             ErrorView.show("管理者ユーザーでのログインが必要です。", null);
             return;
         }
-
-        Label titleLabel = new Label(VaadinIcons.USERS.getHtml() + " 会員・イベント参加者一覧", ContentMode.HTML);
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("会員・イベント参加者一覧", VaadinIcons.USERS));
 
         // パスパラメーターを取得
         long cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
@@ -105,6 +104,7 @@ public class RequestListView extends Wrapper implements View {
         }
 
         Button homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        homeButton.setIcon(VaadinIcons.USER);
         addComponent(homeButton);
         setComponentAlignment(homeButton, Alignment.MIDDLE_CENTER);
     }

@@ -11,13 +11,13 @@ import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceServic
 import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
 import com.github.javatrainingcourse.obogmanager.ui.layout.AboutWindow;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -33,7 +33,7 @@ import java.text.SimpleDateFormat;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = MenuView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = MenuView.VIEW_NAME)
 public class MenuView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "menu";
@@ -57,10 +57,7 @@ public class MenuView extends Wrapper implements View {
             getUI().getNavigator().navigateTo(LoginView.VIEW_NAME);
             return;
         }
-
-        Label titleLabel = new Label(VaadinIcons.USER.getHtml() + " 会員メニュー", ContentMode.HTML);
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("会員メニュー", VaadinIcons.USER));
 
         HorizontalLayout membershipMenuArea = new HorizontalLayout();
         addComponent(membershipMenuArea);
@@ -123,6 +120,10 @@ public class MenuView extends Wrapper implements View {
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
 
+        Button homeButton = new Button("ホーム", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
+        homeButton.setIcon(VaadinIcons.HOME);
+        buttonArea.addComponent(homeButton);
+
         Button facebookGroupButton = new Button("Facebook グループ", click -> UI.getCurrent().getPage()
                 .setLocation("https://www.facebook.com/groups/351472538254785/"));
         facebookGroupButton.setIcon(VaadinIcons.COMMENTS);
@@ -153,9 +154,9 @@ public class MenuView extends Wrapper implements View {
         commentArea.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         form.addComponent(commentArea);
 
-        HorizontalLayout updateButtonArea = new HorizontalLayout();
-        updateButtonArea.setSpacing(true);
-        addComponent(updateButtonArea);
+        HorizontalLayout attendeeOperationsArea = new HorizontalLayout();
+        attendeeOperationsArea.setSpacing(true);
+        addComponent(attendeeOperationsArea);
 
         Button commentUpdateButton = new Button("コメント修正", click -> {
             attendance.setComment(commentArea.getValue());
@@ -169,7 +170,7 @@ public class MenuView extends Wrapper implements View {
             SuccessNotification.show("コメント修正が完了しました");
         });
         commentUpdateButton.setStyleName(ValoTheme.BUTTON_SMALL);
-        updateButtonArea.addComponent(commentUpdateButton);
+        attendeeOperationsArea.addComponent(commentUpdateButton);
 
         if (attendance.isAttend()) {
             Button cancelButton = new Button("キャンセル申込", click -> {
@@ -185,7 +186,7 @@ public class MenuView extends Wrapper implements View {
                 SuccessNotification.show("キャンセル申込が完了しました");
             });
             cancelButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_DANGER);
-            updateButtonArea.addComponent(cancelButton);
+            attendeeOperationsArea.addComponent(cancelButton);
         } else {
             Button reEntryButton = new Button("再申込", click -> {
                 attendance.setAttend(true);
@@ -200,14 +201,12 @@ public class MenuView extends Wrapper implements View {
                 SuccessNotification.show("再申込が完了しました");
             });
             reEntryButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_FRIENDLY);
-            updateButtonArea.addComponent(reEntryButton);
+            attendeeOperationsArea.addComponent(reEntryButton);
         }
     }
 
     private void printAdminMenu() {
-        Label adminLabel = new Label("管理者メニュー");
-        adminLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(adminLabel);
+        addComponent(new HeadingLabel("管理者メニュー", VaadinIcons.USER_STAR));
 
         Label nOfMembershipsLabel = new Label("登録会員数: " + membershipService.countMemberships());
         addComponent(nOfMembershipsLabel);

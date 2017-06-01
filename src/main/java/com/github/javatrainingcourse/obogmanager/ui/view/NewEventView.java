@@ -8,13 +8,13 @@ import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -28,7 +28,7 @@ import java.time.LocalDate;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = NewEventView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = NewEventView.VIEW_NAME)
 public class NewEventView extends Wrapper implements View {
 
     static final String VIEW_NAME = "new-event";
@@ -42,9 +42,7 @@ public class NewEventView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label(VaadinIcons.PLUS.getHtml() + " イベント登録", ContentMode.HTML);
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("イベント登録", VaadinIcons.PLUS));
 
         if (!isAdminLoggedIn() && convocationService.countConvocations() != 0) {
             ErrorView.show("管理者ユーザーでのログインが必要です。", null);
@@ -106,6 +104,7 @@ public class NewEventView extends Wrapper implements View {
                 ErrorView.show("イベントの登録に失敗しました。", e);
             }
         });
+        submitButton.setIcon(VaadinIcons.PLUS);
         submitButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         buttonArea.addComponent(submitButton);
     }

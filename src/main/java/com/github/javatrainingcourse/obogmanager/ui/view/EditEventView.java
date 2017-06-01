@@ -8,13 +8,14 @@ import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
+import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.data.Binder;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -30,7 +31,7 @@ import java.util.stream.Stream;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = EditEventView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = EditEventView.VIEW_NAME)
 public class EditEventView extends Wrapper implements View {
 
     static final String VIEW_NAME = "edit-event";
@@ -44,9 +45,7 @@ public class EditEventView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label(VaadinIcons.TEXT_INPUT.getHtml() + " イベント編集", ContentMode.HTML);
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("イベント編集", VaadinIcons.TEXT_INPUT));
 
         if (!isAdminLoggedIn() && convocationService.countConvocations() != 0) {
             ErrorView.show("管理者ユーザーでのログインが必要です。", null);
@@ -130,10 +129,9 @@ public class EditEventView extends Wrapper implements View {
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
-
-        Button backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        Button backButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        backButton.setIcon(VaadinIcons.USER);
         buttonArea.addComponent(backButton);
-
         Button submitButton = new Button("変更反映", click -> {
             if (subjectField.isEmpty() || targetDateField.isEmpty() || descriptionArea.isEmpty()) {
                 Notification.show("入力が完了していません");
@@ -145,7 +143,7 @@ public class EditEventView extends Wrapper implements View {
             }
             try {
                 convocationService.update(convocation);
-                Notification.show("イベントの変更が完了しました", Notification.Type.ASSISTIVE_NOTIFICATION);
+                SuccessNotification.show("イベントの変更が完了しました");
                 getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
             } catch (RuntimeException e) {
                 ErrorView.show("イベントの変更に失敗しました。", e);

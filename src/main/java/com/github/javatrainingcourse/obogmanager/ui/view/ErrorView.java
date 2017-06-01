@@ -5,13 +5,13 @@
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.App;
-import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -29,7 +29,8 @@ import java.io.StringWriter;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = ErrorView.VIEW_NAME, ui = MainUI.class)
+@UIScope
+@SpringView(name = ErrorView.VIEW_NAME)
 @Slf4j
 public class ErrorView extends Wrapper implements View {
 

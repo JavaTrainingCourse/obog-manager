@@ -6,17 +6,14 @@ package com.github.javatrainingcourse.obogmanager.ui;
 
 import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.ui.view.ErrorView;
-import com.github.javatrainingcourse.obogmanager.ui.view.FrontView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Viewport;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.*;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.spring.navigator.SpringViewProvider;
+import com.vaadin.spring.annotation.SpringViewDisplay;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Vaadin UI を定義します。
@@ -25,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @since 0.1
  */
 @SpringUI
+@SpringViewDisplay
 @Theme(ValoTheme.THEME_NAME)
 @Title("Java研修 Go研修 OB・OG会")
 @Viewport("user-scalable=no,width=500")
@@ -32,12 +30,6 @@ public class MainUI extends UI {
 
     public static final int FIELD_WIDTH_WIDE = 300;
     private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
-    private final SpringViewProvider viewProvider;
-
-    @Autowired
-    public MainUI(SpringViewProvider viewProvider) {
-        this.viewProvider = viewProvider;
-    }
 
     @Override
     protected void init(VaadinRequest request) {
@@ -45,11 +37,7 @@ public class MainUI extends UI {
         if (VaadinService.getCurrent() != null) {
             VaadinService.getCurrent().setSystemMessagesProvider(new JapaneseSystemMessageProvider());
         }
-        Navigator navigator = new Navigator(this, this);
-        navigator.addProvider(viewProvider);
-        navigator.setErrorView(ErrorView.class);
-        setNavigator(navigator);
-        navigator.navigateTo(FrontView.VIEW_NAME);
+        getNavigator().setErrorView(ErrorView.class);
     }
 
     private static class JapaneseSystemMessageProvider implements SystemMessagesProvider {

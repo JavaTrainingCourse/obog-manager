@@ -6,8 +6,9 @@ package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
-import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -26,7 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = LogoutConfirmView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = LogoutConfirmView.VIEW_NAME)
 @Slf4j
 public class LogoutConfirmView extends Wrapper implements View {
 
@@ -44,10 +45,7 @@ public class LogoutConfirmView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label("ログアウト確認");
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
-
+        addComponent(new HeadingLabel("ログアウト確認", VaadinIcons.INFO_CIRCLE));
         addComponent(new Label("ログアウトします。"));
 
         HorizontalLayout buttonArea = new HorizontalLayout();
@@ -62,6 +60,7 @@ public class LogoutConfirmView extends Wrapper implements View {
             membershipService.logout();
             getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
         });
+        logoutButton.setIcon(VaadinIcons.SIGN_OUT);
         logoutButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         buttonArea.addComponent(logoutButton);
     }

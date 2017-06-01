@@ -7,19 +7,16 @@ package com.github.javatrainingcourse.obogmanager.ui.view;
 import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
-import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.github.javatrainingcourse.obogmanager.ui.view.RequestListView.MemberInfo;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -31,7 +28,7 @@ import java.util.stream.Collectors;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = MemberListView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = MemberListView.VIEW_NAME)
 public class MemberListView extends Wrapper implements View {
 
     static final String VIEW_NAME = "member-list";
@@ -45,13 +42,12 @@ public class MemberListView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label(VaadinIcons.BULLETS.getHtml() + " 会員名簿", ContentMode.HTML);
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("会員名簿", VaadinIcons.BULLETS));
 
         printAllMembers();
 
         Button homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        homeButton.setIcon(VaadinIcons.USER);
         addComponent(homeButton);
         setComponentAlignment(homeButton, Alignment.MIDDLE_CENTER);
     }

@@ -8,8 +8,10 @@ import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.model.PasswordResetRequest;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -26,7 +28,7 @@ import java.util.stream.Stream;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = ResetPasswordView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = ResetPasswordView.VIEW_NAME)
 @Slf4j
 public class ResetPasswordView extends Wrapper implements View {
 
@@ -41,9 +43,7 @@ public class ResetPasswordView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label("パスワードリセット");
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("パスワードリセット"));
 
         // パスパラメーターを取得
         String token = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty()).findFirst().orElse("");

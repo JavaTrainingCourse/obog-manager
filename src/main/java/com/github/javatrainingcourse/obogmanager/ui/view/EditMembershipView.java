@@ -9,6 +9,7 @@ import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.data.Binder;
@@ -18,7 +19,6 @@ import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = EditMembershipView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = EditMembershipView.VIEW_NAME)
 @Slf4j
 public class EditMembershipView extends Wrapper implements View {
 
@@ -52,9 +52,7 @@ public class EditMembershipView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label(VaadinIcons.EDIT.getHtml() + " 会員情報編集", ContentMode.HTML);
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("会員情報編集", VaadinIcons.EDIT));
 
         Membership membership = getMembership();
         if (membership == null) {

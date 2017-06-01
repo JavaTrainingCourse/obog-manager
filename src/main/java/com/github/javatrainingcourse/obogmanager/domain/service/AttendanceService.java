@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.util.Pair;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -78,12 +79,32 @@ public class AttendanceService {
         return Pair.of(attendees != null ? attendees.size() : 0, cancels != null ? cancels.size() : 0); // yes, no
     }
 
+    /**
+     * 指定された登録済会員でイベント招集に参加します。
+     *
+     * @param membership  登録済会員
+     * @param convocation イベント招集
+     * @param comment     コメント
+     * @throws DataAccessException データの登録に失敗した場合
+     * @throws MailException       メール送信に失敗した場合
+     */
     public void register(Membership membership, Convocation convocation, String comment) {
         Attendance attendance = new Attendance(convocation, membership, comment);
         attendanceRepository.saveAndFlush(attendance);
         sendAttendMail(membership, convocation);
     }
 
+    /**
+     * 会員登録とイベント招集を同時に実行します。
+     *
+     * @param membership  登録予定の会員情報
+     * @param password    登録予定の生パスワード
+     * @param convocation 参加するイベント招集
+     * @param comment     コメント
+     * @throws DataAccessException データの登録に失敗した場合
+     * @throws MailException       メール送信に失敗した場合
+     */
+    @Transactional
     public void register(Membership membership, String password, Convocation convocation, String comment) {
         membership.setHashedPassword(passwordEncoder.encode(password));
         membership = membershipRepository.saveAndFlush(membership);

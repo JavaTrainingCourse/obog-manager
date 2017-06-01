@@ -7,9 +7,11 @@ package com.github.javatrainingcourse.obogmanager.ui.view;
 import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
@@ -26,11 +28,11 @@ import org.springframework.security.core.AuthenticationException;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = LoginView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = LoginView.VIEW_NAME)
 @Slf4j
 public class LoginView extends Wrapper implements View {
 
-    static final String VIEW_NAME = "login";
+    public static final String VIEW_NAME = "login";
     private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
 
@@ -44,9 +46,7 @@ public class LoginView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
-        Label titleLabel = new Label("会員ログイン");
-        titleLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(titleLabel);
+        addComponent(new HeadingLabel("会員ログイン", VaadinIcons.USER));
 
         FormLayout form = new FormLayout();
         form.setMargin(false);
@@ -88,6 +88,7 @@ public class LoginView extends Wrapper implements View {
                 ErrorView.show("ログイン処理に失敗しました。", e);
             }
         });
+        loginButton.setIcon(VaadinIcons.SIGN_IN);
         loginButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         buttonArea.addComponent(loginButton);
 

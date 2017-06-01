@@ -11,6 +11,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
+ * 成功通知。
+ *
  * @author mikan
  * @since 0.1
  */

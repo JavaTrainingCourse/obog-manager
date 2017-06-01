@@ -5,12 +5,14 @@
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.domain.model.Attendance;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.policy.AttendancePolicy;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
 import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
+import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.layout.AboutWindow;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.data.Binder;
@@ -35,7 +37,7 @@ import java.time.LocalDate;
  * @author mikan
  * @since 0.1
  */
-@SpringView(name = FrontView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = FrontView.VIEW_NAME)
 @Slf4j
 public class FrontView extends Wrapper implements View {
 
@@ -86,9 +88,7 @@ public class FrontView extends Wrapper implements View {
     }
 
     private void printRegistrationSection(Convocation convocation) {
-        Label registrationLabel = new Label(VaadinIcons.PENCIL.getHtml() + " 参加登録", ContentMode.HTML);
-        registrationLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(registrationLabel);
+        addComponent(new HeadingLabel("参加登録", VaadinIcons.PENCIL));
 
         Membership membership = new Membership();
         Binder<Membership> binder = new Binder<>();
@@ -212,12 +212,34 @@ public class FrontView extends Wrapper implements View {
         submitButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         addComponent(submitButton);
         setComponentAlignment(submitButton, Alignment.MIDDLE_CENTER);
+
+        Attendance attendance;
+        try {
+            attendance = attendanceService.find(membership, convocation);
+        } catch (RuntimeException e) {
+            form.setEnabled(false);
+            submitButton.setEnabled(false);
+            Label noticeLabel = new Label("参加登録情報の取得に失敗しました。<br/>" +
+                    "管理者にお問合せください。", ContentMode.HTML);
+            noticeLabel.setStyleName(ValoTheme.LABEL_FAILURE);
+            addComponent(noticeLabel);
+            setComponentAlignment(noticeLabel, Alignment.MIDDLE_CENTER);
+            return;
+        }
+        if (attendance != null && attendance.isAttend()) {
+            commentArea.setValue(attendance.getComment());
+            form.setEnabled(false);
+            submitButton.setEnabled(false);
+            Label noticeLabel = new Label("参加登録は完了しています。<br/>" +
+                    "変更するには会員メニューを開いてください。", ContentMode.HTML);
+            noticeLabel.setStyleName(ValoTheme.LABEL_SUCCESS);
+            addComponent(noticeLabel);
+            setComponentAlignment(noticeLabel, Alignment.MIDDLE_CENTER);
+        }
     }
 
     private void printMenuSection() {
-        Label menuLabel = new Label("会員メニュー");
-        menuLabel.setStyleName(ValoTheme.LABEL_H2);
-        addComponent(menuLabel);
+        addComponent(new HeadingLabel("会員メニュー"));
 
         HorizontalLayout buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
