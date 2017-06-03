@@ -168,6 +168,7 @@ public class EditMembershipView extends Wrapper implements View {
             setCaption(caption);
             textField = new TextField();
             textField.setWidth(MainUI.FIELD_WIDTH_SHORT, Unit.PIXELS);
+            textField.setStyleName(ValoTheme.TEXTFIELD_ALIGN_CENTER);
             radioGroup = new RadioButtonGroup<>();
             radioGroup.setItemCaptionGenerator(t -> t.label);
             radioGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
