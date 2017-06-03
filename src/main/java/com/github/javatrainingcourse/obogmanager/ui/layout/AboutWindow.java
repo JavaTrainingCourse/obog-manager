@@ -35,8 +35,9 @@ public class AboutWindow extends Window {
         layout.addComponent(new Label("<b><a href=\"https://github.com/JavaTrainingCourse/obog-manager\">" +
                 "obog-manager</a></b> v" + App.OBOG_MANAGER_VERSION, ContentMode.HTML));
         layout.addComponent(new Label("<b>AUTHORS</b><br/>" + String.join("<br/>", App.AUTHORS), ContentMode.HTML));
-        layout.addComponent(new Label("Powered by " + VaadinIcons.VAADIN_V.getHtml() + " Vaadin Framework<br/>" +
-                "(<a href=\"https://goo.gl/IIztDT\">紹介スライド</a>)", ContentMode.HTML));
+        layout.addComponent(new Label("<div align=\"center\">Powered by " + VaadinIcons.VAADIN_V.getHtml() +
+                " Vaadin Framework<br/>(<a href=\"https://goo.gl/IIztDT\">紹介スライド</a>)</div>",
+                ContentMode.HTML));
 
         Button closeButton = new Button("閉じる", e -> close());
         layout.addComponent(closeButton);

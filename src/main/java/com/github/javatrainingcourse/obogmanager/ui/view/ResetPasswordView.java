@@ -73,6 +73,7 @@ public class ResetPasswordView extends Wrapper implements View {
         TextField emailField = new TextField("E-mail");
         emailField.setRequiredIndicatorVisible(true);
         emailField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
+        emailField.focus();
         form.addComponent(emailField);
 
         HorizontalLayout buttonArea = new HorizontalLayout();

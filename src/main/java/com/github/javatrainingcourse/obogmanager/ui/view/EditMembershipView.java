@@ -12,10 +12,10 @@ import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
-import com.vaadin.data.Binder;
+import com.vaadin.data.*;
 import com.vaadin.data.converter.StringToIntegerConverter;
+import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -80,26 +80,26 @@ public class EditMembershipView extends Wrapper implements View {
         binder.forField(emailField).withValidator(new EmailValidator("不正なアドレスです"))
                 .bind(Membership::getEmail, Membership::setEmail);
 
-        TextField javaTermField = new TextField("Java 研修 n期 (0 = 期不明, -1 = 対象外)", String.valueOf(membership.getJavaTerm()));
-        form.addComponent(javaTermField);
-        binder.forField(javaTermField)
-                .withConverter(new StringToIntegerConverter("数値を入力してください"))
-                .withValidator(new IntegerRangeValidator("不正な数値です", -1, 100))
-                .bind(Membership::getJavaTerm, Membership::setJavaTerm);
+        TermSelectLayout javaTermSelect = new TermSelectLayout("Java 研修", membership.getJavaTerm());
+        form.addComponent(javaTermSelect);
+        binder.forField(javaTermSelect.getTextField())
+                .withConverter(javaTermSelect.converter())
+                .withValidator(javaTermSelect.validator())
+                .bind(m -> javaTermSelect.getValue(), (m, v) -> m.setJavaTerm(javaTermSelect.setValue(v)));
 
-        TextField java8TermField = new TextField("Java 8 研修 n期 (0 = 期不明, -1 = 対象外)", String.valueOf(membership.getJava8Term()));
-        form.addComponent(java8TermField);
-        binder.forField(java8TermField)
-                .withConverter(new StringToIntegerConverter("数値を入力してください"))
-                .withValidator(new IntegerRangeValidator("不正な数値です", -1, 100))
-                .bind(Membership::getJava8Term, Membership::setJava8Term);
+        TermSelectLayout java8TermSelect = new TermSelectLayout("Java 8 研修", membership.getJava8Term());
+        form.addComponent(java8TermSelect);
+        binder.forField(java8TermSelect.getTextField())
+                .withConverter(java8TermSelect.converter())
+                .withValidator(java8TermSelect.validator())
+                .bind(m -> java8TermSelect.getValue(), (m, v) -> m.setJava8Term(java8TermSelect.setValue(v)));
 
-        TextField goTermField = new TextField("Go 研修 n期 (0 = 期不明, -1 = 対象外)", String.valueOf(membership.getGoTerm()));
-        form.addComponent(goTermField);
-        binder.forField(goTermField)
-                .withConverter(new StringToIntegerConverter("数値を入力してください"))
-                .withValidator(new IntegerRangeValidator("不正な数値です", -1, 100))
-                .bind(Membership::getGoTerm, Membership::setGoTerm);
+        TermSelectLayout goTermSelect = new TermSelectLayout("Go 研修", membership.getGoTerm());
+        form.addComponent(goTermSelect);
+        binder.forField(goTermSelect.getTextField())
+                .withConverter(goTermSelect.converter())
+                .withValidator(goTermSelect.validator())
+                .bind(m -> goTermSelect.getValue(), (m, v) -> m.setGoTerm(goTermSelect.setValue(v)));
 
         Label noticeLabel = new Label("※管理者が上記の登録内容を記入・修正することがあります");
         noticeLabel.setStyleName(ValoTheme.LABEL_TINY);
@@ -146,5 +146,95 @@ public class EditMembershipView extends Wrapper implements View {
         });
         submitButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         buttonArea.addComponent(submitButton);
+    }
+
+    private static class TermSelectLayout extends HorizontalLayout {
+
+        private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+        private final RadioButtonGroup<TermSelect> radioGroup;
+        private final TextField textField;
+
+        private enum TermSelect {
+            NOT_A_MEMBER("対象外"), FORGOT("不明"), INPUT("期");
+            final String label;
+
+            TermSelect(String label) {
+                this.label = label;
+            }
+        }
+
+        TermSelectLayout(String caption, int initialValue) {
+            super();
+            setCaption(caption);
+            textField = new TextField();
+            textField.setWidth(MainUI.FIELD_WIDTH_SHORT, Unit.PIXELS);
+            radioGroup = new RadioButtonGroup<>();
+            radioGroup.setItemCaptionGenerator(t -> t.label);
+            radioGroup.setStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+            radioGroup.setItems(TermSelect.values());
+            switch (initialValue) {
+                case -1:
+                    radioGroup.setValue(TermSelect.NOT_A_MEMBER);
+                    textField.setValue("0");
+                    textField.setEnabled(false);
+                    break;
+                case 0:
+                    radioGroup.setValue(TermSelect.FORGOT);
+                    textField.setValue("0");
+                    textField.setEnabled(false);
+                    break;
+                default:
+                    radioGroup.setValue(TermSelect.INPUT);
+                    textField.setValue(String.valueOf(initialValue));
+                    textField.setEnabled(true);
+                    break;
+            }
+            radioGroup.addValueChangeListener(e -> textField.setEnabled(e.getValue() == TermSelect.INPUT));
+            addComponents(radioGroup, textField);
+        }
+
+        TextField getTextField() {
+            return textField;
+        }
+
+        Converter<String, Integer> converter() {
+            return new StringToIntegerConverter("数値を入力してください");
+        }
+
+        Validator<Integer> validator() {
+            return new AbstractValidator<Integer>("不正な数値です") {
+                private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+
+                @Override
+                public ValidationResult apply(Integer value, ValueContext context) {
+                    if (radioGroup.getValue() != TermSelect.INPUT) {
+                        return ValidationResult.ok();
+                    }
+                    return value > 0 && value < 100 ? ValidationResult.ok() : ValidationResult.error(getMessage(value));
+                }
+            };
+        }
+
+        int setValue(int value) {
+            switch (radioGroup.getValue()) {
+                case FORGOT:
+                    return 0;
+                case NOT_A_MEMBER:
+                    return -1;
+                default:
+                    return value;
+            }
+        }
+
+        int getValue() {
+            switch (radioGroup.getValue()) {
+                case FORGOT:
+                    return 0;
+                case NOT_A_MEMBER:
+                    return -1;
+                default:
+                    return Integer.valueOf(textField.getValue());
+            }
+        }
     }
 }
