@@ -155,7 +155,7 @@ public class EditMembershipView extends Wrapper implements View {
         private final TextField textField;
 
         private enum TermSelect {
-            NOT_A_MEMBER("対象外"), FORGOT("不明"), INPUT("期");
+            INPUT("期修了"), FORGOT("修了 (期不明)"), NOT_A_MEMBER("未修了または対象外");
             final String label;
 
             TermSelect(String label) {
@@ -190,7 +190,7 @@ public class EditMembershipView extends Wrapper implements View {
                     break;
             }
             radioGroup.addValueChangeListener(e -> textField.setEnabled(e.getValue() == TermSelect.INPUT));
-            addComponents(radioGroup, textField);
+            addComponents(textField, radioGroup);
         }
 
         TextField getTextField() {

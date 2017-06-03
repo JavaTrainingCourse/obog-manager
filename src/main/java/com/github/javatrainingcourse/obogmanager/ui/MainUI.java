@@ -29,7 +29,7 @@ import com.vaadin.ui.themes.ValoTheme;
 public class MainUI extends UI {
 
     public static final int FIELD_WIDTH_WIDE = 300;
-    public static final int FIELD_WIDTH_SHORT = 100;
+    public static final int FIELD_WIDTH_SHORT = 50;
     private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
 
     @Override
