@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+      url: jdbc:h2:mem:AZ
+      username: sa
+      password:
+      driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+
+vaadin:
+  servlet:
+    production-mode: false
+
+logging:
+  level:
+    org.springframework: INFO
+
+app:
+  url: http://localhost:8080
+  reply: java-obog@localhost

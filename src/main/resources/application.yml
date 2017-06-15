@@ -13,13 +13,6 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: XXXXXXXXXX@gmail.com
-    password: XXXXXXXXXX
-    properties.mail.smtp:auth: true
-    properties.mail.smtp.starttls.enable: true
 
 vaadin:
   servlet:
@@ -31,4 +24,4 @@ logging:
 
 app:
   url: http://localhost:8080
-  reply: java-obog@aomikan.org
+  reply: java-obog@localhost
