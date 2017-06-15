@@ -10,8 +10,6 @@ import com.vaadin.server.VaadinSession;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,9 +24,9 @@ import java.util.List;
 @Service
 public class MembershipService {
 
+    private final MailService mailService;
     private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MailSender mailSender;
 
     @Value("${app.url}")
     private String appUrl;
@@ -37,11 +35,11 @@ public class MembershipService {
     private String appReply;
 
     @Autowired
-    public MembershipService(MembershipRepository membershipRepository, PasswordEncoder passwordEncoder,
-                             MailSender mailSender) {
+    public MembershipService(MailService mailService, MembershipRepository membershipRepository,
+                             PasswordEncoder passwordEncoder) {
+        this.mailService = mailService;
         this.membershipRepository = membershipRepository;
         this.passwordEncoder = passwordEncoder;
-        this.mailSender = mailSender;
     }
 
     @Nullable
@@ -86,7 +84,7 @@ public class MembershipService {
                     membership.getName());
         }
         membershipRepository.saveAndFlush(membership);
-        sendUpdateMail(membership);
+        mailService.sendUpdateMail(membership);
     }
 
     private void beginSession(Membership membership) {
@@ -98,20 +96,5 @@ public class MembershipService {
 
     private void endSession() {
         VaadinSession.getCurrent().setAttribute(Membership.class, null);
-    }
-
-    private void sendUpdateMail(Membership membership) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setReplyTo(appReply);
-        message.setBcc(appReply);
-        message.setTo(membership.getEmail());
-        message.setSubject("【会員情報編集完了】Java研修 Go研修 OB・OG会");
-        message.setText(membership.getName() + " さん\n\n" +
-                "会員情報の編集が完了しました。\n\n" +
-                "詳細の確認・登録内容の変更は以下 URL より行ってください。\n" +
-                appUrl + "\n\n" +
-                "本メールに関するお問合せ先: " + appReply + "\n" +
-                "Java研修 Go研修 OB・OG会");
-        mailSender.send(message);
     }
 }
