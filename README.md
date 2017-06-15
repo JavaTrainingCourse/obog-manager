@@ -1,5 +1,7 @@
 # Java研修 Go研修 OB/OG会 会員管理システム
 
+[![Build Status](https://travis-ci.org/JavaTrainingCourse/obog-manager.svg?branch=master)](https://travis-ci.org/JavaTrainingCourse/obog-manager)
+
 OB/OG会の参加登録を受け付けるシステムです。
 
 ## 本番環境
