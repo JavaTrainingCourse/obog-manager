@@ -189,7 +189,8 @@ public class RequestListView extends Wrapper implements View {
     private StreamResource createCSV2(String subject, List<Attendance> attendances) {
         return new StreamResource(() -> {
             String csv = "名前,コメント\r\n" + attendances.stream().filter(Attendance::isAttend)
-                    .map(a -> a.getMembership().getName() + "," + a.getComment())
+                    .map(a -> a.getMembership().getName() + "," +
+                            a.getComment().replaceAll("\r", "").replaceAll("\n", ""))
                     .collect(Collectors.joining("\r\n"));
             try {
                 return new ByteArrayInputStream(csv.getBytes("Shift_JIS"));

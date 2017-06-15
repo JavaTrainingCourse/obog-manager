@@ -25,7 +25,7 @@ import com.vaadin.ui.themes.ValoTheme;
 @SpringViewDisplay
 @Theme(ValoTheme.THEME_NAME)
 @Title("Java研修 Go研修 OB・OG会")
-@Viewport("user-scalable=no,width=550")
+@Viewport("user-scalable=no,width=600")
 public class MainUI extends UI {
 
     public static final int FIELD_WIDTH_WIDE = 300;
