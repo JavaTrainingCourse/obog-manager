@@ -17,14 +17,16 @@ import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.*;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,9 +74,14 @@ public class RequestListView extends Wrapper implements View {
             ErrorView.show("イベント招集一覧の取得に失敗しました。", e);
             return;
         }
-        String allMembersItem = "会員一覧";
         List<String> selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
+        String allMembersItem = "会員一覧";
         selections.add(0, allMembersItem);
+
+        HorizontalLayout comboBoxArea = new HorizontalLayout();
+        comboBoxArea.setSpacing(true);
+        addComponent(comboBoxArea);
+
         ComboBox<String> convocationComboBox = new ComboBox<>();
         convocationComboBox.setEmptySelectionAllowed(false);
         convocationComboBox.setTextInputAllowed(false);
@@ -90,33 +97,66 @@ public class RequestListView extends Wrapper implements View {
                 getUI().getNavigator().navigateTo(RequestListView.VIEW_NAME + "/" + id);
             }
         });
-        addComponent(convocationComboBox);
+        comboBoxArea.addComponent(convocationComboBox);
 
         if (cId == -1) {
-            printAllMembers();
+            List<Membership> memberships;
+            try {
+                memberships = membershipService.getAll();
+            } catch (RuntimeException e) {
+                ErrorView.show("会員一覧の取得に失敗しました。", e);
+                return;
+            }
+            // TXT
+            Button downloadTxtButton = new Button("TXT (名前)");
+            downloadTxtButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
+            FileDownloader txtDownloader = new FileDownloader(createTXT(allMembersItem, memberships));
+            txtDownloader.extend(downloadTxtButton);
+            comboBoxArea.addComponent(downloadTxtButton);
+            // CSV
+            Button downloadCsvButton = new Button("CSV (名前,Java,Java8,Go)");
+            downloadCsvButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
+            FileDownloader csvDownloader = new FileDownloader(createCSV4(allMembersItem, memberships));
+            csvDownloader.extend(downloadCsvButton);
+            comboBoxArea.addComponent(downloadCsvButton);
+            // Grid
+            printAllMembers(memberships);
         } else {
             Convocation convocation = convocations.stream().filter(c -> c.getId() == cId).findAny().orElse(null);
             if (convocation == null) {
                 ErrorView.show("指定されたイベント招集が見つかりません: " + cId, null);
                 return;
             }
-            printConvocationResponses(convocation);
+            List<Attendance> attendances;
+            try {
+                attendances = attendanceService.getResponses(convocation);
+            } catch (RuntimeException e) {
+                ErrorView.show("申込一覧の取得に失敗しました。", e);
+                return;
+            }
+            // TXT
+            Button downloadTxtButton = new Button("TXT (名前)");
+            downloadTxtButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
+            FileDownloader txtDownloader = new FileDownloader(createTXT(convocation.getSubject(), attendances.stream()
+                    .filter(Attendance::isAttend).map(Attendance::getMembership).collect(Collectors.toList())));
+            txtDownloader.extend(downloadTxtButton);
+            comboBoxArea.addComponent(downloadTxtButton);
+            // CSV
+            Button downloadCsvButton = new Button("CSV (名前,コメント)");
+            downloadCsvButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
+            FileDownloader csvDownloader = new FileDownloader(createCSV2(convocation.getSubject(), attendances));
+            csvDownloader.extend(downloadCsvButton);
+            comboBoxArea.addComponent(downloadCsvButton);
+            // Grid
+            printConvocationResponses(attendances);
         }
-
         Button homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         homeButton.setIcon(VaadinIcons.USER);
         addComponent(homeButton);
         setComponentAlignment(homeButton, Alignment.MIDDLE_CENTER);
     }
 
-    private void printAllMembers() {
-        List<Membership> memberships;
-        try {
-            memberships = membershipService.getAll();
-        } catch (RuntimeException e) {
-            ErrorView.show("会員一覧の取得に失敗しました。", e);
-            return;
-        }
+    private void printAllMembers(List<Membership> memberships) {
         Grid<MemberInfo> membershipGrid = new Grid<>();
         membershipGrid.setItems(memberships.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
@@ -130,14 +170,7 @@ public class RequestListView extends Wrapper implements View {
         addComponent(membershipGrid);
     }
 
-    private void printConvocationResponses(Convocation convocation) {
-        List<Attendance> attendances;
-        try {
-            attendances = attendanceService.getResponses(convocation);
-        } catch (RuntimeException e) {
-            ErrorView.show("申込一覧の取得に失敗しました。", e);
-            return;
-        }
+    private void printConvocationResponses(List<Attendance> attendances) {
         Grid<MemberInfo> membershipGrid = new Grid<>();
         membershipGrid.setItems(attendances.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
@@ -151,6 +184,46 @@ public class RequestListView extends Wrapper implements View {
             membershipGrid.setHeightByRows(attendances.size());
         }
         addComponent(membershipGrid);
+    }
+
+    private StreamResource createCSV2(String subject, List<Attendance> attendances) {
+        return new StreamResource(() -> {
+            String csv = "名前,コメント\r\n" + attendances.stream().filter(Attendance::isAttend)
+                    .map(a -> a.getMembership().getName() + "," + a.getComment())
+                    .collect(Collectors.joining("\r\n"));
+            try {
+                return new ByteArrayInputStream(csv.getBytes("Shift_JIS"));
+            } catch (UnsupportedEncodingException e) {
+                return new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8));
+            }
+        }, subject + ".csv");
+    }
+
+    private StreamResource createCSV4(String subject, List<Membership> memberships) {
+        return new StreamResource(() -> {
+            String csv = "名前,Java 研修,Java 8 研修,Go 研修\r\n" + memberships.stream()
+                    .map(m -> m.getName() + "," + MemberInfo.safeTerm2Text(m.getJavaTerm()) + "," +
+                            MemberInfo.safeTerm2Text(m.getJava8Term()) + "," + MemberInfo.safeTerm2Text(m.getGoTerm()))
+                    .collect(Collectors.joining("\r\n"));
+            try {
+                return new ByteArrayInputStream(csv.getBytes("Shift_JIS"));
+            } catch (UnsupportedEncodingException e) {
+                return new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8));
+            }
+        }, subject + ".csv");
+    }
+
+    private StreamResource createTXT(String subject, List<Membership> memberships) {
+        return new StreamResource(() -> {
+            String list = memberships.stream()
+                    .map(Membership::getName)
+                    .collect(Collectors.joining("\r\n"));
+            try {
+                return new ByteArrayInputStream(list.getBytes("Shift_JIS"));
+            } catch (UnsupportedEncodingException e) {
+                return new ByteArrayInputStream(list.getBytes(StandardCharsets.UTF_8));
+            }
+        }, subject + ".txt");
     }
 
     @Getter
@@ -195,7 +268,18 @@ public class RequestListView extends Wrapper implements View {
                 case 0:
                     return "✔";
                 default:
-                    return "✔ " + String.valueOf(term) + "期";
+                    return "✔ " + term + "期";
+            }
+        }
+
+        private static String safeTerm2Text(int term) {
+            switch (term) {
+                case -1:
+                    return "";
+                case 0:
+                    return "?";
+                default:
+                    return String.valueOf(term);
             }
         }
     }
