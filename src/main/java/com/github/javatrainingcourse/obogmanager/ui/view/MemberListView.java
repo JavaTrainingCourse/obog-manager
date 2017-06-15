@@ -42,6 +42,10 @@ public class MemberListView extends Wrapper implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        if (!isLoggedIn()) {
+            getUI().getNavigator().navigateTo(LoginView.VIEW_NAME);
+            return;
+        }
         addComponent(new HeadingLabel("会員名簿", VaadinIcons.BULLETS));
 
         printAllMembers();
