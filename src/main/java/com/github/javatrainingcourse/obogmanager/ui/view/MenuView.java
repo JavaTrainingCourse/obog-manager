@@ -4,7 +4,7 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
-import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.domain.model.Attendance;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
@@ -37,7 +37,7 @@ import java.text.SimpleDateFormat;
 public class MenuView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "menu";
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
     private static final DateFormat FORMATTER = new SimpleDateFormat("MM/dd hh:mm");
     private transient final MembershipService membershipService;
     private transient final ConvocationService convocationService;

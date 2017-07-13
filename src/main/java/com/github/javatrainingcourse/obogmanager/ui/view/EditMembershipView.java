@@ -4,7 +4,7 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
-import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class EditMembershipView extends Wrapper implements View {
 
     static final String VIEW_NAME = "edit-member";
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
     private transient final MembershipService membershipService;
     private transient final AttendanceService attendanceService;
 
@@ -150,7 +150,7 @@ public class EditMembershipView extends Wrapper implements View {
 
     private static class TermSelectLayout extends HorizontalLayout {
 
-        private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+        private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
         private final RadioButtonGroup<TermSelect> radioGroup;
         private final TextField textField;
 
@@ -204,7 +204,6 @@ public class EditMembershipView extends Wrapper implements View {
 
         Validator<Integer> validator() {
             return new AbstractValidator<Integer>("不正な数値です") {
-                private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
 
                 @Override
                 public ValidationResult apply(Integer value, ValueContext context) {

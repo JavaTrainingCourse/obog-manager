@@ -5,6 +5,7 @@
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.icons.VaadinIcons;
@@ -26,7 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class ThanksView extends Wrapper implements View {
 
     static final String VIEW_NAME = "thanks";
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
 
     @Value("${app.reply}")
     private String appReply;

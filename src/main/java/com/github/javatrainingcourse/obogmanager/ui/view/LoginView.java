@@ -4,7 +4,7 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
-import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
@@ -33,7 +33,7 @@ import org.springframework.security.core.AuthenticationException;
 public class LoginView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "login";
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
     private transient final MembershipService membershipService;
 
     @Value("${server.port}")
@@ -94,8 +94,6 @@ public class LoginView extends Wrapper implements View {
 
         passwordField.addShortcutListener(new ShortcutListener("Enter キーを押すとログインします",
                 ShortcutAction.KeyCode.ENTER, null) {
-            private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
-
             @Override
             public void handleAction(Object sender, Object target) {
                 loginButton.click();

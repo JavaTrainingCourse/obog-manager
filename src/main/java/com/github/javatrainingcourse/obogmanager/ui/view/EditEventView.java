@@ -4,7 +4,7 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
-import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 public class EditEventView extends Wrapper implements View {
 
     static final String VIEW_NAME = "edit-event";
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
     private transient final ConvocationService convocationService;
 
     @Autowired

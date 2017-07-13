@@ -4,7 +4,7 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.component;
 
-import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -18,7 +18,7 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class SuccessNotification extends Notification {
 
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
 
     private SuccessNotification(String caption) {
         super(caption, Type.TRAY_NOTIFICATION);

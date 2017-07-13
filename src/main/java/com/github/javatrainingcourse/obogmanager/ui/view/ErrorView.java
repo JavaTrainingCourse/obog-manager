@@ -5,6 +5,7 @@
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -35,7 +36,7 @@ import java.io.StringWriter;
 public class ErrorView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "error";
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
     private static final String PARAM_MESSAGE = "error.message";
     private static final String PARAM_THROWABLE = "error.throwable";
 

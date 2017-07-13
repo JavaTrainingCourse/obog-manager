@@ -4,7 +4,7 @@
 
 package com.github.javatrainingcourse.obogmanager.ui;
 
-import com.github.javatrainingcourse.obogmanager.App;
+import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.ui.view.ErrorView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -30,7 +30,7 @@ public class MainUI extends UI {
 
     public static final int FIELD_WIDTH_WIDE = 300;
     public static final int FIELD_WIDTH_SHORT = 50;
-    private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
     private static final SystemMessagesProvider SYSTEM_MESSAGES = new JapaneseSystemMessageProvider();
 
     @Override
@@ -44,7 +44,7 @@ public class MainUI extends UI {
 
     private static class JapaneseSystemMessageProvider implements SystemMessagesProvider {
 
-        private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+        private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
         private static final CustomizedSystemMessages MESSAGES = new CustomizedSystemMessages();
         private static final String MSG1 = "保存していないデータがあれば書き留めた上で、";
         private static final String MSG2 = "<u>ここをクリック</u>するか ESC キーを押して続行してください。";

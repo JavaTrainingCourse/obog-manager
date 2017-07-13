@@ -4,7 +4,6 @@
 
 package com.github.javatrainingcourse.obogmanager.domain.model;
 
-import com.github.javatrainingcourse.obogmanager.App;
 import lombok.*;
 
 import javax.persistence.*;
@@ -77,7 +76,7 @@ public class Attendance {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AttendanceId implements Serializable {
-        private static final long serialVersionUID = App.OBOG_MANAGER_SERIAL_VERSION_UID;
+        private static final long serialVersionUID = com.github.javatrainingcourse.obogmanager.Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
         private Long convocationId;
         private Long membershipId;
     }
