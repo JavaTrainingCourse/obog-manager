@@ -205,6 +205,8 @@ public class EditMembershipView extends Wrapper implements View {
         Validator<Integer> validator() {
             return new AbstractValidator<Integer>("不正な数値です") {
 
+                private static final long serialVersionUID = 1L;
+
                 @Override
                 public ValidationResult apply(Integer value, ValueContext context) {
                     if (radioGroup.getValue() != TermSelect.INPUT) {

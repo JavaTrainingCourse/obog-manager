@@ -7,7 +7,6 @@ package com.github.javatrainingcourse.obogmanager.domain.service;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.repository.ConvocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class ConvocationService {
     private final ConvocationRepository convocationRepository;
 
     @Autowired
-    public ConvocationService(ConvocationRepository convocationRepository, ResourceLoader resourceLoader) {
+    public ConvocationService(ConvocationRepository convocationRepository) {
         this.convocationRepository = convocationRepository;
     }
 

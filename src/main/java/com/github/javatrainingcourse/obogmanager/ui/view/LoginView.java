@@ -94,6 +94,8 @@ public class LoginView extends Wrapper implements View {
 
         passwordField.addShortcutListener(new ShortcutListener("Enter キーを押すとログインします",
                 ShortcutAction.KeyCode.ENTER, null) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void handleAction(Object sender, Object target) {
                 loginButton.click();

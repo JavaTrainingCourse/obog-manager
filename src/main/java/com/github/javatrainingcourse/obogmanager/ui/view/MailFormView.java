@@ -106,8 +106,7 @@ public class MailFormView extends Wrapper implements View {
         });
         comboBoxArea.addComponent(convocationComboBox);
 
-        List<Membership> recipients = Collections.emptyList();
-
+        List<Membership> recipients;
         if (cId == -1) {
             try {
                 recipients = membershipService.getAll();
