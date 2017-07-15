@@ -158,6 +158,7 @@ public class MailFormView extends Wrapper implements View {
                 .map(m -> m.getName() + " <" + m.getEmail() + ">")
                 .collect(Collectors.joining(", ")));
         recipientsLabel.setCaption("宛先一覧");
+        recipientsLabel.setSizeFull();
         form.addComponent(recipientsLabel);
 
         TextField subjectField = new TextField("件名");
