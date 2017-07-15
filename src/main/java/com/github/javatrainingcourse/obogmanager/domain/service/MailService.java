@@ -17,6 +17,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -45,11 +46,34 @@ public class MailService {
     }
 
     /**
+     * 指定された宛先一覧に BCC で一括送信します。
+     *
+     * @param recipients 宛先一覧
+     * @param subject    件名
+     * @param text       本文
+     */
+    @Async
+    public void sendMailAsBcc(List<String> recipients, String subject, String text) {
+        if (recipients.isEmpty()) {
+            throw new IllegalArgumentException("recipients is empty.");
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setReplyTo(appReply);
+        message.setBcc(recipients.toArray(new String[recipients.size()]));
+        message.setSubject(subject);
+        message.setText(text);
+        try {
+            mailSender.send(message);
+        } catch (MailException e) {
+            exceptionHandler.accept(e);
+        }
+    }
+
+    /**
      * 登録完了メールを送信します。
      *
      * @param membership  メンバー情報
      * @param convocation 対象のイベント招待
-     * @throws MailException メール送信に失敗した場合
      */
     @Async
     void sendAttendMail(Membership membership, Convocation convocation) {
@@ -76,7 +100,6 @@ public class MailService {
      *
      * @param membership  メンバー情報
      * @param convocation 対象のイベント招待
-     * @throws MailException メール送信に失敗した場合
      */
     @Async
     void sendCancelMail(Membership membership, Convocation convocation) {
@@ -102,7 +125,6 @@ public class MailService {
      * パスワードリセット案内メールを送信します。
      *
      * @param request パスワードリセット要求
-     * @throws MailException メール送信に失敗した場合
      */
     @Async
     void sendPasswordResetMail(PasswordResetRequest request) {
@@ -129,7 +151,6 @@ public class MailService {
      * メンバー情報更新完了メールを送信します。
      *
      * @param membership メンバー情報
-     * @throws MailException メール送信に失敗した場合
      */
     @Async
     void sendUpdateMail(Membership membership) {

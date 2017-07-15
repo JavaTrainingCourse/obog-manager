@@ -219,6 +219,11 @@ public class MenuView extends Wrapper implements View {
         requestListButton.setIcon(VaadinIcons.USERS);
         addComponent(requestListButton);
 
+        Button mailButton = new Button("一括メール送信",
+                click -> getUI().getNavigator().navigateTo(MailFormView.VIEW_NAME));
+        mailButton.setIcon(VaadinIcons.ENVELOPES_O);
+        addComponent(mailButton);
+
         Button updateEventButton = new Button("登録済イベントの編集",
                 click -> getUI().getNavigator().navigateTo(EditEventView.VIEW_NAME));
         updateEventButton.setIcon(VaadinIcons.TEXT_INPUT);
