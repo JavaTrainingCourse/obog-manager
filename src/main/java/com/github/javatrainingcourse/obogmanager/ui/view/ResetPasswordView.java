@@ -4,7 +4,6 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
-import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.domain.model.PasswordResetRequest;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
@@ -12,7 +11,6 @@ import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
 import com.github.javatrainingcourse.obogmanager.ui.component.SuccessNotification;
 import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;

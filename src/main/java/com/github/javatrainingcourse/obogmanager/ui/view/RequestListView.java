@@ -4,7 +4,6 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
-import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.domain.model.Attendance;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;

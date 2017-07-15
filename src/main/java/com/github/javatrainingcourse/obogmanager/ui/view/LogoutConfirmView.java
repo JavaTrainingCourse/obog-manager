@@ -4,7 +4,6 @@
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
-import com.github.javatrainingcourse.obogmanager.App;
 import com.github.javatrainingcourse.obogmanager.Version;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
