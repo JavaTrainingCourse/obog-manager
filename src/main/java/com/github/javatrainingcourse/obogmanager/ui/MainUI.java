@@ -45,32 +45,32 @@ public class MainUI extends UI {
     private static class JapaneseSystemMessageProvider implements SystemMessagesProvider {
 
         private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
-        private static final CustomizedSystemMessages MESSAGES = new CustomizedSystemMessages();
-        private static final String MSG1 = "保存していないデータがあれば書き留めた上で、";
-        private static final String MSG2 = "<u>ここをクリック</u>するか ESC キーを押して続行してください。";
+        private final CustomizedSystemMessages messages = new CustomizedSystemMessages();
+        private final String message1 = "保存していないデータがあれば書き留めた上で、";
+        private final String message2 = "<u>ここをクリック</u>するか ESC キーを押して続行してください。";
 
-        static {
-            MESSAGES.setSessionExpiredCaption("セッションが切れました");
-            MESSAGES.setSessionExpiredMessage(MSG1 + MSG2);
-            MESSAGES.setSessionExpiredNotificationEnabled(true);
-            MESSAGES.setCommunicationErrorCaption("通信に失敗しました");
-            MESSAGES.setCommunicationErrorMessage(MSG1 + MSG2);
-            MESSAGES.setCommunicationErrorNotificationEnabled(true);
-            MESSAGES.setAuthenticationErrorCaption("認証に失敗しました");
-            MESSAGES.setAuthenticationErrorMessage(MSG1 + MSG2);
-            MESSAGES.setAuthenticationErrorNotificationEnabled(true);
-            MESSAGES.setInternalErrorCaption("内部エラーが発生しました");
-            MESSAGES.setInternalErrorMessage(MSG1 + MSG2);
-            MESSAGES.setInternalErrorNotificationEnabled(true);
-            MESSAGES.setCookiesDisabledCaption("Cookie が無効です");
-            MESSAGES.setCookiesDisabledMessage("このアプリケーションは Cookie 機能を利用しています。<br/>" +
-                    "ブラウザで Cookie を有効にした後で、" + MSG2);
-            MESSAGES.setCookiesDisabledNotificationEnabled(true);
+        JapaneseSystemMessageProvider() {
+            messages.setSessionExpiredCaption("セッションが切れました");
+            messages.setSessionExpiredMessage(message1 + message2);
+            messages.setSessionExpiredNotificationEnabled(true);
+            messages.setCommunicationErrorCaption("通信に失敗しました");
+            messages.setCommunicationErrorMessage(message1 + message2);
+            messages.setCommunicationErrorNotificationEnabled(true);
+            messages.setAuthenticationErrorCaption("認証に失敗しました");
+            messages.setAuthenticationErrorMessage(message1 + message2);
+            messages.setAuthenticationErrorNotificationEnabled(true);
+            messages.setInternalErrorCaption("内部エラーが発生しました");
+            messages.setInternalErrorMessage(message1 + message2);
+            messages.setInternalErrorNotificationEnabled(true);
+            messages.setCookiesDisabledCaption("Cookie が無効です");
+            messages.setCookiesDisabledMessage("このアプリケーションは Cookie 機能を利用しています。<br/>" +
+                    "ブラウザで Cookie を有効にした後で、" + message2);
+            messages.setCookiesDisabledNotificationEnabled(true);
         }
 
         @Override
         public SystemMessages getSystemMessages(SystemMessagesInfo systemMessagesInfo) {
-            return MESSAGES;
+            return messages;
         }
     }
 }
