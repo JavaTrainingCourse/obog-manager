@@ -161,6 +161,7 @@ public class RequestListView extends Wrapper implements View {
         membershipGrid.setItems(memberships.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
         membershipGrid.addColumn(MemberInfo::getName).setCaption("名前");
+        membershipGrid.addColumn(MemberInfo::getAdmin).setCaption("Admin");
         membershipGrid.addColumn(MemberInfo::getEmail).setCaption("E-mail");
         membershipGrid.addColumn(MemberInfo::getJavaTerm).setCaption("Java研修");
         membershipGrid.addColumn(MemberInfo::getJava8Term).setCaption("Java8研修");
@@ -173,7 +174,6 @@ public class RequestListView extends Wrapper implements View {
     private void printConvocationResponses(List<Attendance> attendances) {
         Grid<MemberInfo> membershipGrid = new Grid<>();
         membershipGrid.setItems(attendances.stream().map(MemberInfo::from).collect(Collectors.toList()));
-        membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
         membershipGrid.addColumn(MemberInfo::getName).setCaption("名前");
         membershipGrid.addColumn(MemberInfo::getEmail).setCaption("E-mail");
         membershipGrid.addColumn(MemberInfo::getAttend).setCaption("参加");
@@ -232,6 +232,7 @@ public class RequestListView extends Wrapper implements View {
 
         private Long membershipId;
         private String name;
+        private String admin;
         private String email;
         private String attend;
         private String comment;
@@ -244,6 +245,7 @@ public class RequestListView extends Wrapper implements View {
             MemberInfo info = new MemberInfo();
             info.membershipId = membership.getId();
             info.name = membership.getName();
+            info.admin = membership.isAdmin() ? "✔" : "";
             info.email = membership.getEmail();
             info.javaTerm = term2Text(membership.getJavaTerm());
             info.java8Term = term2Text(membership.getJava8Term());
@@ -253,9 +255,11 @@ public class RequestListView extends Wrapper implements View {
 
         static MemberInfo from(Attendance attendance) {
             MemberInfo info = new MemberInfo();
-            info.membershipId = attendance.getMembership().getId();
-            info.name = attendance.getMembership().getName();
-            info.email = attendance.getMembership().getEmail();
+            Membership membership = attendance.getMembership();
+            info.membershipId = membership.getId();
+            info.name = membership.getName();
+            info.admin = membership.isAdmin() ? "✔" : "";
+            info.email = membership.getEmail();
             info.attend = attendance.getAttend() ? "✔" : "";
             info.comment = attendance.getComment();
             info.entryDate = attendance.getLastUpdateDate();
