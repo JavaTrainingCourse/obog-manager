@@ -52,6 +52,28 @@ public class MembershipService {
     }
 
     /**
+     * 登録済パスワードを検証します。
+     *
+     * @param hashedPassword 登録済パスワードのハッシュ
+     * @param password       登録済パスワード
+     * @return 正しければ {@code true}, それ以外は {@code false}
+     */
+    public boolean validatePassword(String hashedPassword, String password) {
+        return passwordEncoder.matches(password, hashedPassword);
+    }
+
+    /**
+     * パスワードを更新します。
+     * この変更はフラッシュされないため、更新を実際に反映するには {@link #update(Membership)} が必要です。
+     *
+     * @param membership  会員情報
+     * @param newPassword 新しいパスワード
+     */
+    public void updatePassword(Membership membership, String newPassword) {
+        membership.setHashedPassword(passwordEncoder.encode(newPassword));
+    }
+
+    /**
      * E-mail とパスワードでログインします。
      *
      * @param email    登録済 E-mail
@@ -64,7 +86,7 @@ public class MembershipService {
         if (membership == null) {
             throw new UsernameNotFoundException(email);
         }
-        if (!passwordEncoder.matches(password, membership.getHashedPassword())) {
+        if (!validatePassword(membership.getHashedPassword(), password)) {
             throw new BadCredentialsException("invalid password for " + email);
         }
         beginSession(membership);

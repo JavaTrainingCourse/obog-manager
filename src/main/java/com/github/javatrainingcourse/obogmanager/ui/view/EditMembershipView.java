@@ -21,6 +21,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,15 @@ public class EditMembershipView extends Wrapper implements View {
         noticeLabel.setStyleName(ValoTheme.LABEL_TINY);
         addComponent(noticeLabel);
 
+        PasswordField passwordField = new PasswordField("パスワード (E-mail アドレス変更時のみ必要)");
+        passwordField.setVisible(false);
+        passwordField.setEnabled(false);
+        emailField.addValueChangeListener(ev -> {
+            passwordField.setVisible(!ev.getValue().equals(currentEmail));
+            passwordField.setEnabled(!ev.getValue().equals(currentEmail));
+        });
+        addComponent(passwordField);
+
         HorizontalLayout buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
@@ -114,27 +124,39 @@ public class EditMembershipView extends Wrapper implements View {
         buttonArea.addComponent(backButton);
 
         Button submitButton = new Button("編集完了", click -> {
-            if (emailField.isEmpty()) {
-                Notification.show("入力が完了していません", Notification.Type.WARNING_MESSAGE);
+            String newEmail = emailField.getValue();
+            if (newEmail.isEmpty()) {
+                Notification.show("入力が完了していません", Type.WARNING_MESSAGE);
                 return;
             }
-            if (!binder.writeBeanIfValid(membership)) {
-                Notification.show("入力が完了していません", Notification.Type.WARNING_MESSAGE);
-                return;
-            }
-            if (!currentEmail.equals(membership.getEmail())) {
+            if (!currentEmail.equals(newEmail)) {
                 try {
-                    if (attendanceService.isEmailTaken(membership.getEmail())) {
-                        Notification.show("他の人が登録した E-mail が指定されています",
-                                Notification.Type.WARNING_MESSAGE);
+                    if (attendanceService.isEmailTaken(newEmail)) {
+                        Notification.show("他の人が登録した E-mail が指定されています", Type.WARNING_MESSAGE);
                         return;
                     }
                 } catch (RuntimeException e) {
                     log.error("Cannot check email exists", e);
-                    Notification.show("現在 E-mail の修正ができません。E-mail を元に戻してください",
-                            Notification.Type.WARNING_MESSAGE);
+                    Notification.show("現在 E-mail の修正ができません。E-mail を元に戻してください", Type.WARNING_MESSAGE);
                     return;
                 }
+                if (passwordField.isEmpty()) {
+                    Notification.show("E-mail を修正にはパスワードの入力が必須です", Type.WARNING_MESSAGE);
+                    return;
+                }
+                if (!membershipService.validatePassword(membership.getHashedPassword(), passwordField.getValue())) {
+                    Notification.show("入力されたパスワードが現在の登録済パスワードと異なります", Type.WARNING_MESSAGE);
+                    return;
+                }
+            }
+            if (!binder.writeBeanIfValid(membership)) {
+                Notification.show("入力が完了していません", Type.WARNING_MESSAGE);
+                return;
+            }
+            if (!currentEmail.equals(newEmail)) {
+                membershipService.updatePassword(membership, passwordField.getValue());
+                log.info("Changing E-mail for " + membership.getName() +
+                        " (" + currentEmail + " -> " + membership.getEmail() + ")");
             }
             try {
                 membershipService.update(membership);
