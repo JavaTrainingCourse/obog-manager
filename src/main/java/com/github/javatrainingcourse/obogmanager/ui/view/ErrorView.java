@@ -35,7 +35,7 @@ import java.io.StringWriter;
 public class ErrorView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "error";
-    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
+    private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private static final String PARAM_MESSAGE = "error.message";
     private static final String PARAM_THROWABLE = "error.throwable";
 

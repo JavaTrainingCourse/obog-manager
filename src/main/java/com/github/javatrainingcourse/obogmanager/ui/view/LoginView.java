@@ -33,7 +33,7 @@ import org.springframework.security.core.AuthenticationException;
 public class LoginView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "login";
-    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
+    private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
 
     @Value("${server.port}")

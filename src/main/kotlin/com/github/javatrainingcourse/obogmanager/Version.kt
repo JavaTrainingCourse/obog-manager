@@ -7,9 +7,9 @@ package com.github.javatrainingcourse.obogmanager
 import java.util.*
 
 object Version {
-    val OBOG_MANAGER_SERIAL_VERSION_UID = 1L
-    val OBOG_MANAGER_VERSION = "0.1"
-    val AUTHORS = Arrays.asList(
+    const val OBOG_MANAGER_SERIAL_VERSION_UID = 1L
+    const val OBOG_MANAGER_VERSION = "0.1"
+    val authors: List<String> = Arrays.asList(
             "Yutaka Kato",
             ""
     )

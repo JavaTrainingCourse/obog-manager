@@ -21,7 +21,7 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class Wrapper extends VerticalLayout {
 
-    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
+    private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
 
     public Wrapper() {
         Label titleLabel = new Label("Java研修 Go研修 OB/OG会");

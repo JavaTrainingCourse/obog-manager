@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class LogoutConfirmView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "logout";
-    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
+    private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
 
     @Value("${server.port}")

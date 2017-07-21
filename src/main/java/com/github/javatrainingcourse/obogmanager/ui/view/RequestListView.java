@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 public class RequestListView extends Wrapper implements View {
 
     static final String VIEW_NAME = "request-list";
-    private static final long serialVersionUID = Version.INSTANCE.getOBOG_MANAGER_SERIAL_VERSION_UID();
+    private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
     private transient final ConvocationService convocationService;
     private transient final AttendanceService attendanceService;
