@@ -98,8 +98,11 @@ public class MenuView extends Wrapper implements View {
 
         try {
             Pair<Integer, Integer> counts = attendanceService.countAttendees(convocation);
-            Label attendeesLabel = new Label("現在 " + counts.getFirst() + " 名が参加登録しています。");
-            addComponent(attendeesLabel);
+
+            Button attendeesButton = new Button("参加予定者一覧 (" + counts.getFirst() + ")",
+                    click -> getUI().getNavigator().navigateTo(AttendeeListView.VIEW_NAME + "/" + convocation.getId()));
+            attendeesButton.setStyleName(ValoTheme.BUTTON_SMALL);
+            addComponent(attendeesButton);
         } catch (RuntimeException e) {
             ErrorView.show("参加数の取得に失敗しました。", e);
             return;
@@ -169,7 +172,7 @@ public class MenuView extends Wrapper implements View {
             getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
             SuccessNotification.show("コメント修正が完了しました");
         });
-        commentUpdateButton.setStyleName(ValoTheme.BUTTON_SMALL);
+        commentUpdateButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_FRIENDLY);
         attendeeOperationsArea.addComponent(commentUpdateButton);
 
         if (attendance.isAttend()) {
