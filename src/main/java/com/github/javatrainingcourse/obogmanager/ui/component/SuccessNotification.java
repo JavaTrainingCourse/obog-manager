@@ -26,7 +26,9 @@ public class SuccessNotification extends Notification {
         setStyleName(ValoTheme.NOTIFICATION_SUCCESS);
     }
 
-    public static void show(String caption) {
-        new SuccessNotification(caption).show(UI.getCurrent().getPage());
+    public static Notification show(String caption) {
+        Notification notification = new SuccessNotification(caption);
+        notification.show(UI.getCurrent().getPage());
+        return notification;
     }
 }
