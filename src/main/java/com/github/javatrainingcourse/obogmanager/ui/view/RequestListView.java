@@ -21,7 +21,6 @@ import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
@@ -227,7 +226,6 @@ public class RequestListView extends Wrapper implements View {
         }, subject + ".txt");
     }
 
-    @Getter
     static class MemberInfo {
 
         private Long membershipId;
@@ -235,6 +233,47 @@ public class RequestListView extends Wrapper implements View {
         private String admin;
         private String email;
         private String attend;
+
+        public Long getMembershipId() {
+            return membershipId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getAdmin() {
+            return admin;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getAttend() {
+            return attend;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public Date getEntryDate() {
+            return entryDate;
+        }
+
+        public String getJavaTerm() {
+            return javaTerm;
+        }
+
+        public String getJava8Term() {
+            return java8Term;
+        }
+
+        public String getGoTerm() {
+            return goTerm;
+        }
+
         private String comment;
         private Date entryDate;
         private String javaTerm;

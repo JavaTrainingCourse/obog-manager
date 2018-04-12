@@ -17,7 +17,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -28,12 +27,12 @@ import org.springframework.beans.factory.annotation.Value;
  * @since 0.1
  */
 @SpringView(name = LogoutConfirmView.VIEW_NAME)
-@Slf4j
 public class LogoutConfirmView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "logout";
     private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LogoutConfirmView.class);
 
     @Value("${server.port}")
     private String serverPort;

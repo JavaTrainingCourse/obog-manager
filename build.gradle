@@ -29,7 +29,6 @@ dependencies {
     // Vaadin
     compile('com.vaadin:vaadin-spring-boot-starter')
     // Utilities
-    compile('org.projectlombok:lombok')
     compile('com.sun.mail:javax.mail')
     compile('org.pegdown:pegdown:1.6.0')
     compile('org.checkerframework:checker-qual:2.5.0')

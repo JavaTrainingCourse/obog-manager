@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.domain.service;
@@ -8,7 +8,6 @@ import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.model.PasswordResetRequest;
 import com.github.javatrainingcourse.obogmanager.ui.view.ResetPasswordView;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -27,10 +26,10 @@ import java.util.function.Consumer;
  * @since 0.1
  */
 @Service
-@Slf4j
 public class MailService {
 
     private final MailSender mailSender;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MailService.class);
 
     @Value("${app.url}")
     private String appUrl;

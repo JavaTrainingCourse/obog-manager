@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -26,7 +26,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -38,13 +37,13 @@ import java.time.LocalDate;
  * @since 0.1
  */
 @SpringView(name = FrontView.VIEW_NAME)
-@Slf4j
 public class FrontView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "";
     private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final AttendanceService attendanceService;
     private transient final ConvocationService convocationService;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FrontView.class);
 
     @Autowired
     public FrontView(AttendanceService attendanceService, ConvocationService convocationService) {
@@ -155,7 +154,7 @@ public class FrontView extends Wrapper implements View {
                 Notification.show("確認用パスワードが一致していません", Type.WARNING_MESSAGE);
                 return;
             }
-            if (!AttendancePolicy.allows(javaCheckBox.getValue(), java8CheckBox.getValue(), goCheckBox.getValue(),
+            if (!AttendancePolicy.INSTANCE.allows(javaCheckBox.getValue(), java8CheckBox.getValue(), goCheckBox.getValue(),
                     incompleteCheckBox.getValue())) {
                 Notification.show("参加資格がないか、ありえない組み合わせを指定しています", Type.WARNING_MESSAGE);
                 return;

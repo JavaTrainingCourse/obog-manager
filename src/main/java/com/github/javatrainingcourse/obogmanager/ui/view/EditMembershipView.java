@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -23,7 +23,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -34,13 +33,13 @@ import org.springframework.beans.factory.annotation.Value;
  * @since 0.1
  */
 @SpringView(name = EditMembershipView.VIEW_NAME)
-@Slf4j
 public class EditMembershipView extends Wrapper implements View {
 
     static final String VIEW_NAME = "edit-member";
     private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
     private transient final AttendanceService attendanceService;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(EditMembershipView.class);
 
     @Value("${server.port}")
     private String serverPort;

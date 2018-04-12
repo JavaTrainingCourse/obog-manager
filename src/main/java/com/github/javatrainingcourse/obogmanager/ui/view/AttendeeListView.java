@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -20,7 +20,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -120,7 +119,6 @@ public class AttendeeListView extends Wrapper implements View {
         addComponent(cancelsGrid);
     }
 
-    @Getter
     static class MemberInfo {
         private String name;
         private String comment;
@@ -131,6 +129,14 @@ public class AttendeeListView extends Wrapper implements View {
             info.name = membership.getName();
             info.comment = attendance.getComment();
             return info;
+        }
+
+        String getName() {
+            return name;
+        }
+
+        String getComment() {
+            return comment;
         }
     }
 }

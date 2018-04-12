@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -17,7 +17,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 
 import java.io.PrintWriter;
@@ -31,13 +30,13 @@ import java.io.StringWriter;
  */
 @UIScope
 @SpringView(name = ErrorView.VIEW_NAME)
-@Slf4j
 public class ErrorView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "error";
     private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private static final String PARAM_MESSAGE = "error.message";
     private static final String PARAM_THROWABLE = "error.throwable";
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ErrorView.class);
 
     static void show(String message, Throwable throwable) {
         VaadinSession session = VaadinSession.getCurrent();

@@ -17,7 +17,6 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -29,12 +28,12 @@ import org.springframework.security.core.AuthenticationException;
  * @since 0.1
  */
 @SpringView(name = LoginView.VIEW_NAME)
-@Slf4j
 public class LoginView extends Wrapper implements View {
 
     public static final String VIEW_NAME = "login";
     private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LoginView.class);
 
     @Value("${server.port}")
     private String serverPort;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.domain.service;
@@ -11,7 +11,6 @@ import com.github.javatrainingcourse.obogmanager.domain.model.PasswordResetReque
 import com.github.javatrainingcourse.obogmanager.domain.repository.AttendanceRepository;
 import com.github.javatrainingcourse.obogmanager.domain.repository.MembershipRepository;
 import com.github.javatrainingcourse.obogmanager.domain.repository.PasswordResetRequestRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +33,6 @@ import java.util.stream.Collectors;
  * @since 0.1
  */
 @Service
-@Slf4j
 public class AttendanceService {
 
     private final MailService mailService;
@@ -42,6 +40,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AttendanceService.class);
 
     @Value("${app.url}")
     private String appUrl;
@@ -87,7 +86,7 @@ public class AttendanceService {
      * @throws MailException       メール送信に失敗した場合
      */
     public void register(Membership membership, Convocation convocation, String comment) {
-        Attendance attendance = new Attendance(convocation, membership, comment);
+        Attendance attendance = Attendance.Companion.newAttendance(convocation, membership, comment);
         attendanceRepository.saveAndFlush(attendance);
         mailService.sendAttendMail(membership, convocation);
     }
@@ -107,7 +106,7 @@ public class AttendanceService {
         membership.setHashedPassword(passwordEncoder.encode(password));
         membership = membershipRepository.saveAndFlush(membership);
         System.out.println("membership id=" + membership.getId());
-        Attendance attendance = new Attendance(convocation, membership, comment);
+        Attendance attendance = Attendance.Companion.newAttendance(convocation, membership, comment);
         attendanceRepository.saveAndFlush(attendance);
         mailService.sendAttendMail(membership, convocation);
     }
@@ -117,8 +116,10 @@ public class AttendanceService {
         if (membership == null || convocation == null) {
             return null;
         }
-        return attendanceRepository.findById(Attendance.AttendanceId.builder()
-                .membershipId(membership.getId()).convocationId(convocation.getId()).build());
+        Attendance.AttendanceId id = new Attendance.AttendanceId();
+        id.setMembershipId(membership.getId());
+        id.setConvocationId(convocation.getId());
+        return attendanceRepository.findById(id);
     }
 
     public void updateComment(Attendance attendance) {
@@ -142,7 +143,7 @@ public class AttendanceService {
 
     public void requestPasswordReset(String email) {
         Membership membership = membershipRepository.findByEmail(email);
-        PasswordResetRequest request = new PasswordResetRequest(membership);
+        PasswordResetRequest request = PasswordResetRequest.Companion.newRequest(membership);
         passwordResetRequestRepository.saveAndFlush(request);
         mailService.sendPasswordResetMail(request);
     }
