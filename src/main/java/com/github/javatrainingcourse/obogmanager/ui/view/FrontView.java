@@ -90,6 +90,8 @@ public class FrontView extends Wrapper implements View {
     private void printRegistrationSection(Convocation convocation) {
         addComponent(new HeadingLabel("参加登録", VaadinIcons.PENCIL));
 
+        addComponent(new Label("過去に参加した方は<a href=\"/#!" + LoginView.VIEW_NAME + "\">会員ログイン</a>してから申し込んでください。", ContentMode.HTML));
+
         Membership membership = new Membership();
         Binder<Membership> binder = new Binder<>();
         binder.readBean(membership);
@@ -137,7 +139,7 @@ public class FrontView extends Wrapper implements View {
         addComponent(java8CheckBox);
         CheckBox goCheckBox = new CheckBox("私は Go 研修の修了生です");
         addComponent(goCheckBox);
-        CheckBox incompleteCheckBox = new CheckBox("私は現在開講中の Java 研修の受講生です");
+        CheckBox incompleteCheckBox = new CheckBox("私は現在開講中の Go 研修の受講生です");
         addComponent(incompleteCheckBox);
 
         Button submitButton = new Button("参加登録", click -> {

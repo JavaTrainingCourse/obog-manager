@@ -24,17 +24,17 @@ public final class AttendancePolicy {
      * @param javaCompleted  Java 修了生
      * @param java8Completed Java 8 修了生
      * @param goCompleted    Go 修了生
-     * @param javaIncomplete 現行 Java 受講生
+     * @param incomplete     現行講習受講生
      * @return 可能な場合 {@code true}, それ以外の場合 {@code false}
      */
     public static boolean allows(boolean javaCompleted, boolean java8Completed, boolean goCompleted,
-                                 boolean javaIncomplete) {
-        if (javaCompleted && javaIncomplete) {
+                                 boolean incomplete) {
+        if (javaCompleted && incomplete) {
             return false;
         }
         if ((!javaCompleted) && java8Completed) {
             return false;
         }
-        return javaCompleted || goCompleted || javaIncomplete;
+        return javaCompleted || goCompleted || incomplete;
     }
 }
