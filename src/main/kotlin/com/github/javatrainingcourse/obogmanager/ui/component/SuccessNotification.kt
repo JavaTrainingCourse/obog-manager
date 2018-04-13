@@ -24,7 +24,7 @@ class SuccessNotification private constructor(caption: String) : Notification(ca
     }
 
     companion object {
-        private val serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID
+        private const val serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID
 
         fun show(caption: String) {
             val notification = SuccessNotification(caption)

@@ -4,6 +4,8 @@
 
 package com.github.javatrainingcourse.obogmanager.domain.model
 
+import com.github.javatrainingcourse.obogmanager.Version
+
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
@@ -64,7 +66,7 @@ class Attendance {
         var membershipId: Long? = null
 
         companion object {
-            private const val serialVersionUID = com.github.javatrainingcourse.obogmanager.Version.OBOG_MANAGER_SERIAL_VERSION_UID
+            private const val serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID
         }
     }
 

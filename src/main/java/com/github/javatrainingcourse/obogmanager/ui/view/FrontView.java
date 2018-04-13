@@ -146,6 +146,10 @@ public class FrontView extends Wrapper implements View {
                 Notification.show("入力が完了していません", Type.WARNING_MESSAGE);
                 return;
             }
+            if (lastNameField.isEmpty() || firstNameField.isEmpty()) {
+                Notification.show("名前が入力されていません", Type.WARNING_MESSAGE);
+                return;
+            }
             if (passwordField.isEmpty() || passwordConfirmField.isEmpty()) {
                 Notification.show("パスワードが入力されていません", Type.WARNING_MESSAGE);
                 return;

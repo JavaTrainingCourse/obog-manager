@@ -15,6 +15,7 @@ import com.github.javatrainingcourse.obogmanager.ui.layout.Wrapper;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -22,6 +23,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -103,8 +105,13 @@ public class AttendeeListView extends Wrapper implements View {
         attendsGrid.setItems(attends);
         attendsGrid.addColumn(MemberInfo::getName).setCaption("名前");
         attendsGrid.addColumn(MemberInfo::getComment).setCaption("コメント");
+        attendsGrid.addColumn(MemberInfo::getCreated).setCaption("登録日時");
+        attendsGrid.addColumn(MemberInfo::getUpdated).setCaption("更新日時");
+        attendsGrid.sort(attendsGrid.getColumns().get(3), SortDirection.DESCENDING);
         attendsGrid.setWidth(100, Unit.PERCENTAGE);
-        attendsGrid.setHeightByRows(attends.size());
+        if (!attends.isEmpty()) {
+            attendsGrid.setHeightByRows(attends.size());
+        }
         addComponent(attendsGrid);
         List<MemberInfo> cancels = attendances.stream()
                 .filter(a -> !a.isAttend())
@@ -114,20 +121,31 @@ public class AttendeeListView extends Wrapper implements View {
         cancelsGrid.setItems(cancels);
         cancelsGrid.addColumn(MemberInfo::getName).setCaption("名前");
         cancelsGrid.addColumn(MemberInfo::getComment).setCaption("コメント");
+        cancelsGrid.addColumn(MemberInfo::getCreated).setCaption("登録日時");
+        cancelsGrid.addColumn(MemberInfo::getUpdated).setCaption("更新日時");
+        cancelsGrid.sort(cancelsGrid.getColumns().get(3), SortDirection.DESCENDING);
         cancelsGrid.setWidth(100, Unit.PERCENTAGE);
-        cancelsGrid.setHeightByRows(cancels.size());
+        if (cancels.isEmpty()) {
+            cancelsGrid.setVisible(false);
+        } else {
+            cancelsGrid.setHeightByRows(cancels.size());
+        }
         addComponent(cancelsGrid);
     }
 
     static class MemberInfo {
         private String name;
         private String comment;
+        private Date created;
+        private Date updated;
 
         static MemberInfo from(Attendance attendance) {
             MemberInfo info = new MemberInfo();
             Membership membership = attendance.getMembership();
             info.name = membership.getName();
             info.comment = attendance.getComment();
+            info.created = attendance.getCreatedDate();
+            info.updated = attendance.getLastUpdateDate();
             return info;
         }
 
@@ -137,6 +155,14 @@ public class AttendeeListView extends Wrapper implements View {
 
         String getComment() {
             return comment;
+        }
+
+        Date getCreated() {
+            return created;
+        }
+
+        Date getUpdated() {
+            return updated;
         }
     }
 }

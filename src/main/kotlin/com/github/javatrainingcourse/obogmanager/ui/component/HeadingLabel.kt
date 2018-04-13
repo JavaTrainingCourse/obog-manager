@@ -27,6 +27,6 @@ class HeadingLabel : Label {
     }
 
     companion object {
-        private val serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID
+        private const val serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID
     }
 }

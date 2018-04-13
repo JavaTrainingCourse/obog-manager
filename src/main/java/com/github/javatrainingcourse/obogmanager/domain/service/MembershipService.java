@@ -28,12 +28,6 @@ public class MembershipService {
     private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${app.url}")
-    private String appUrl;
-
-    @Value("${app.reply}")
-    private String appReply;
-
     @Autowired
     public MembershipService(MailService mailService, MembershipRepository membershipRepository,
                              PasswordEncoder passwordEncoder) {

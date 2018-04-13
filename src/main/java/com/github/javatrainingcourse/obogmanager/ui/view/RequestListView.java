@@ -166,7 +166,9 @@ public class RequestListView extends Wrapper implements View {
         membershipGrid.addColumn(MemberInfo::getJava8Term).setCaption("Java8研修");
         membershipGrid.addColumn(MemberInfo::getGoTerm).setCaption("Go研修");
         membershipGrid.setWidth(100, Unit.PERCENTAGE);
-        membershipGrid.setHeightByRows(memberships.size());
+        if (!memberships.isEmpty()) {
+            membershipGrid.setHeightByRows(memberships.size());
+        }
         addComponent(membershipGrid);
     }
 

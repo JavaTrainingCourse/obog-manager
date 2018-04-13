@@ -13,7 +13,6 @@ import com.github.javatrainingcourse.obogmanager.domain.repository.MembershipRep
 import com.github.javatrainingcourse.obogmanager.domain.repository.PasswordResetRequestRepository;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.util.Pair;
 import org.springframework.mail.MailException;
@@ -41,12 +40,6 @@ public class AttendanceService {
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AttendanceService.class);
-
-    @Value("${app.url}")
-    private String appUrl;
-
-    @Value("${app.reply}")
-    private String appReply;
 
     @Autowired
     public AttendanceService(MailService mailService, MembershipRepository membershipRepository,
