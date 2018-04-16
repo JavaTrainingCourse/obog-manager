@@ -9,7 +9,6 @@ import com.github.javatrainingcourse.obogmanager.domain.repository.MembershipRep
 import com.vaadin.server.VaadinSession;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,10 +71,11 @@ public class MembershipService {
      *
      * @param email    登録済 E-mail
      * @param password 登録済パスワード
+     * @return ログインした会員の会員情報
      * @throws UsernameNotFoundException ユーザーが見つからない場合
      * @throws BadCredentialsException   パスワードがマッチしない場合
      */
-    public void login(String email, String password) {
+    public Membership login(String email, String password) {
         Membership membership = membershipRepository.findByEmail(email);
         if (membership == null) {
             throw new UsernameNotFoundException(email);
@@ -84,6 +84,7 @@ public class MembershipService {
             throw new BadCredentialsException("invalid password for " + email);
         }
         beginSession(membership);
+        return membership;
     }
 
     public void logout() {

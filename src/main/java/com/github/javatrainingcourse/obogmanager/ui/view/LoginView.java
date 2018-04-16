@@ -5,6 +5,11 @@
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.Version;
+import com.github.javatrainingcourse.obogmanager.domain.model.Attendance;
+import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
+import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
+import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
+import com.github.javatrainingcourse.obogmanager.domain.service.ConvocationService;
 import com.github.javatrainingcourse.obogmanager.domain.service.MembershipService;
 import com.github.javatrainingcourse.obogmanager.ui.MainUI;
 import com.github.javatrainingcourse.obogmanager.ui.component.HeadingLabel;
@@ -17,6 +22,8 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -33,14 +40,18 @@ public class LoginView extends Wrapper implements View {
     public static final String VIEW_NAME = "login";
     private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LoginView.class);
+    private transient final ConvocationService convocationService;
+    private transient final AttendanceService attendanceService;
+    private static final Logger log = LoggerFactory.getLogger(LoginView.class);
 
     @Value("${server.port}")
     private String serverPort;
 
     @Autowired
-    public LoginView(MembershipService membershipService) {
+    public LoginView(MembershipService membershipService, ConvocationService convocationService, AttendanceService attendanceService) {
         this.membershipService = membershipService;
+        this.convocationService = convocationService;
+        this.attendanceService = attendanceService;
     }
 
     @Override
@@ -77,14 +88,35 @@ public class LoginView extends Wrapper implements View {
                 Notification.show("入力が完了していません");
                 return;
             }
+
+            // Authentication
+            Membership membership;
             try {
-                membershipService.login(emailField.getValue(), passwordField.getValue());
-                getUI().getNavigator().navigateTo(MenuView.VIEW_NAME);
+                membership = membershipService.login(emailField.getValue(), passwordField.getValue());
             } catch (AuthenticationException e) {
                 log.info("Authentication failed: " + e.getMessage());
                 ErrorView.show("E-mail が存在しないか、パスワードが一致していません。", null);
+                return;
             } catch (RuntimeException e) {
                 ErrorView.show("ログイン処理に失敗しました。", e);
+                return;
+            }
+
+            // Find latest convocation
+            Convocation latest;
+            try {
+                latest = convocationService.getLatestConvocation();
+            } catch (IllegalStateException e) { // before creating the first convocation
+                getUI().getNavigator().navigateTo(MenuView.VIEW_NAME);
+                return;
+            }
+
+            // Switch transition by attend or not
+            Attendance attendance = attendanceService.find(membership, latest);
+            if (attendance == null || !attendance.isAttend()) {
+                getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
+            } else {
+                getUI().getNavigator().navigateTo(MenuView.VIEW_NAME);
             }
         });
         loginButton.setIcon(VaadinIcons.SIGN_IN);

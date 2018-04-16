@@ -109,8 +109,11 @@ public class MenuView extends Wrapper implements View {
         }
 
         if (attendance == null) {
-            Label noAttendanceLabel = new Label("あなたの参加登録はまだありません。");
-            addComponent(noAttendanceLabel);
+            addComponent(new Label("あなたの参加登録はまだありません。"));
+            Button checkItButton = new Button("最新のイベント招集をチェック",
+                    click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
+            checkItButton.setStyleName(ValoTheme.BUTTON_SMALL + " " + ValoTheme.BUTTON_FRIENDLY);
+            addComponent(checkItButton);
         } else {
             printAttendance(attendance);
         }
