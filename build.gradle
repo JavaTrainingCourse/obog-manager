@@ -33,7 +33,7 @@ dependencies {
     compile('org.checkerframework:checker-qual:2.5.0')
     // Database
     runtime('com.h2database:h2') // development and test
-    runtime('mysql:mysql-connector-java') // production
+    runtime('org.postgresql:postgresql:42.2.2.jre7') // heroku
     // Tests
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
