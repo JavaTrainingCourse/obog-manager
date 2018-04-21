@@ -15,6 +15,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+    properties.hibernate.default_schema: obog
   mail:
     host: ${SMTP_SERVER}
     port: ${SMTP_PORT}
