@@ -1,0 +1,37 @@
+{
+  "name": "obog-manager",
+  "description": "Java/Go training course OB/OG membership management system",
+  "repository": "https://github.com/JavaTrainingCourse/obog-manager",
+  "logo": "https://github.com/JavaTrainingCourse.png",
+  "keywords": [
+    "java",
+    "kotlin"
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-dev"
+    }
+  ],
+  "env": {
+    "SMTP_SERVER": {
+      "description": "Mail transfer server address",
+      "value": "smtp.gmail.com"
+    },
+    "SMTP_PORT": {
+      "description": "Mail transfer server port",
+      "value": "587"
+    },
+    "SMTP_USER": {
+      "description": "Mail transfer server username"
+    },
+    "SMTP_PASSWORD": {
+      "description": "Mail transfer server password"
+    },
+    "APP_URL": {
+      "description": "Application URL"
+    },
+    "APP_EMAIL": {
+      "description": "Sender email address"
+    }
+  }
+}
