@@ -10,22 +10,14 @@
   "addons": [
     {
       "plan": "heroku-postgresql:hobby-dev"
+    },
+    {
+      "plan": "sendgrid:starter"
     }
   ],
   "env": {
-    "SMTP_SERVER": {
-      "description": "Mail transfer server address",
-      "value": "smtp.gmail.com"
-    },
-    "SMTP_PORT": {
-      "description": "Mail transfer server port",
-      "value": "587"
-    },
-    "SMTP_USER": {
-      "description": "Mail transfer server username"
-    },
-    "SMTP_PASSWORD": {
-      "description": "Mail transfer server password"
+    "SENDGRID_API_KEY": {
+      "description": "Sendgrid API Key"
     },
     "APP_URL": {
       "description": "Application URL"

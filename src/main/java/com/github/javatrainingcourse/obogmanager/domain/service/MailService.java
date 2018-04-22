@@ -57,6 +57,7 @@ public class MailService {
             throw new IllegalArgumentException("recipients is empty.");
         }
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(recipients.toArray(new String[recipients.size()]));
         message.setSubject(subject);
@@ -77,6 +78,7 @@ public class MailService {
     @Async
     void sendAttendMail(Membership membership, Convocation convocation) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(appReply);
         message.setTo(membership.getEmail());
@@ -103,6 +105,7 @@ public class MailService {
     @Async
     void sendCancelMail(Membership membership, Convocation convocation) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(appReply);
         message.setTo(membership.getEmail());
@@ -128,6 +131,7 @@ public class MailService {
     @Async
     void sendPasswordResetMail(PasswordResetRequest request) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setTo(request.getMembership().getEmail());
         message.setSubject("【パスワードリセット】Java研修 Go研修 OB・OG会");
@@ -154,6 +158,7 @@ public class MailService {
     @Async
     void sendUpdateMail(Membership membership) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(appReply);
         message.setTo(membership.getEmail());

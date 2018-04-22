@@ -17,10 +17,10 @@ spring:
       ddl-auto: update
     properties.hibernate.default_schema: obog
   mail:
-    host: ${SMTP_SERVER}
-    port: ${SMTP_PORT}
-    username: ${SMTP_USER}
-    password: ${SMTP_PASSWORD}
+    host: smtp.sendgrid.net
+    port: 587
+    username: apikey
+    password: ${SENDGRID_API_KEY}
     properties.mail.smtp:
       auth: true
       starttls.enable: true
