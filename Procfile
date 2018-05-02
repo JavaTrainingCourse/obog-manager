@@ -1,1 +1,1 @@
-web: java -javaagent:newrelic.jar -jar -Dspring.profiles.active=heroku build/libs/obog-manager.jar
+web: java -jar -Dspring.profiles.active=heroku build/libs/obog-manager.jar
