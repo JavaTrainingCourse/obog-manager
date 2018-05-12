@@ -8,6 +8,8 @@ import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.model.PasswordResetRequest;
 import com.github.javatrainingcourse.obogmanager.ui.view.ResetPasswordView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -29,7 +31,7 @@ import java.util.function.Consumer;
 public class MailService {
 
     private final MailSender mailSender;
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MailService.class);
+    private static final Logger log = LoggerFactory.getLogger(MailService.class);
 
     @Value("${app.url}")
     private String appUrl;
@@ -56,7 +58,7 @@ public class MailService {
         if (recipients.isEmpty()) {
             throw new IllegalArgumentException("recipients is empty.");
         }
-        SimpleMailMessage message = new SimpleMailMessage();
+        var message = new SimpleMailMessage();
         message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(recipients.toArray(new String[recipients.size()]));
@@ -77,7 +79,7 @@ public class MailService {
      */
     @Async
     void sendAttendMail(Membership membership, Convocation convocation) {
-        SimpleMailMessage message = new SimpleMailMessage();
+        var message = new SimpleMailMessage();
         message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(appReply);
@@ -104,7 +106,7 @@ public class MailService {
      */
     @Async
     void sendCancelMail(Membership membership, Convocation convocation) {
-        SimpleMailMessage message = new SimpleMailMessage();
+        var message = new SimpleMailMessage();
         message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(appReply);
@@ -130,7 +132,7 @@ public class MailService {
      */
     @Async
     void sendPasswordResetMail(PasswordResetRequest request) {
-        SimpleMailMessage message = new SimpleMailMessage();
+        var message = new SimpleMailMessage();
         message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setTo(request.getMembership().getEmail());
@@ -157,7 +159,7 @@ public class MailService {
      */
     @Async
     void sendUpdateMail(Membership membership) {
-        SimpleMailMessage message = new SimpleMailMessage();
+        var message = new SimpleMailMessage();
         message.setFrom(appReply);
         message.setReplyTo(appReply);
         message.setBcc(appReply);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -44,14 +44,14 @@ public class ResetPasswordView extends Wrapper implements View {
         addComponent(new HeadingLabel("パスワードリセット"));
 
         // パスパラメーターを取得
-        String token = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty()).findFirst().orElse("");
+        var token = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty()).findFirst().orElse("");
         if (token.isEmpty()) {
             printRequestSection();
             return;
         }
 
         try {
-            PasswordResetRequest request = attendanceService.getPasswordResetRequest(token);
+            var request = attendanceService.getPasswordResetRequest(token);
             printResetSection(request);
         } catch (IllegalArgumentException e) {
             log.info("トークン検証失敗", e);
@@ -60,29 +60,29 @@ public class ResetPasswordView extends Wrapper implements View {
     }
 
     private void printRequestSection() {
-        Label messageLabel = new Label("登録済 E-mail アドレスを入力してください。" +
+        var messageLabel = new Label("登録済 E-mail アドレスを入力してください。" +
                 "パスワードリセット用リンクを含む E-mail を送信します。");
         addComponent(messageLabel);
 
-        FormLayout form = new FormLayout();
+        var form = new FormLayout();
         form.setMargin(false);
         addComponent(form);
 
-        TextField emailField = new TextField("E-mail");
+        var emailField = new TextField("E-mail");
         emailField.setRequiredIndicatorVisible(true);
         emailField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         emailField.focus();
         form.addComponent(emailField);
 
-        HorizontalLayout buttonArea = new HorizontalLayout();
+        var buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
 
-        Button homeButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
+        var homeButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
         buttonArea.addComponent(homeButton);
 
-        Button submitButton = new Button("送信", click -> {
+        var submitButton = new Button("送信", click -> {
             if (emailField.isEmpty()) {
                 Notification.show("E-mail が入力されていません", Notification.Type.WARNING_MESSAGE);
                 return;
@@ -103,30 +103,30 @@ public class ResetPasswordView extends Wrapper implements View {
     }
 
     private void printResetSection(PasswordResetRequest request) {
-        Label messageLabel = new Label("E-mail アドレスが確認できました。新しいパスワードを入力してください。");
+        var messageLabel = new Label("E-mail アドレスが確認できました。新しいパスワードを入力してください。");
         addComponent(messageLabel);
 
-        FormLayout form = new FormLayout();
+        var form = new FormLayout();
         form.setMargin(false);
         addComponent(form);
 
-        Label userLabel = new Label(request.getMembership().getName());
+        var userLabel = new Label(request.getMembership().getName());
         userLabel.setCaption("名前");
         form.addComponent(userLabel);
 
-        Label emailLabel = new Label(request.getMembership().getEmail());
+        var emailLabel = new Label(request.getMembership().getEmail());
         emailLabel.setCaption("E-mail");
         form.addComponent(emailLabel);
 
-        PasswordField passwordField = new PasswordField("パスワード");
+        var passwordField = new PasswordField("パスワード");
         passwordField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         form.addComponent(passwordField);
 
-        PasswordField passwordConfirmField = new PasswordField("確認用");
+        var passwordConfirmField = new PasswordField("確認用");
         passwordConfirmField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         form.addComponent(passwordConfirmField);
 
-        Button submitButton = new Button("パスワード変更", click -> {
+        var submitButton = new Button("パスワード変更", click -> {
             if (passwordField.isEmpty()) {
                 Notification.show("パスワードを入力してください", Notification.Type.WARNING_MESSAGE);
                 return;

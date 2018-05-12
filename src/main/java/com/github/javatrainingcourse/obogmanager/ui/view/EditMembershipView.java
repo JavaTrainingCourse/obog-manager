@@ -23,6 +23,8 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -39,7 +41,7 @@ public class EditMembershipView extends Wrapper implements View {
     private static final long serialVersionUID = Version.OBOG_MANAGER_SERIAL_VERSION_UID;
     private transient final MembershipService membershipService;
     private transient final AttendanceService attendanceService;
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(EditMembershipView.class);
+    private static final Logger log = LoggerFactory.getLogger(EditMembershipView.class);
 
     @Value("${server.port}")
     private String serverPort;
@@ -54,58 +56,58 @@ public class EditMembershipView extends Wrapper implements View {
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         addComponent(new HeadingLabel("会員情報編集", VaadinIcons.EDIT));
 
-        Membership membership = getMembership();
+        var membership = getMembership();
         if (membership == null) {
             getUI().getNavigator().navigateTo(LoginView.VIEW_NAME);
             return;
         }
-        final String currentEmail = membership.getEmail();
+        final var currentEmail = membership.getEmail();
 
         addComponent(new Label("必要な個所を編集してください。編集完了を押すと、確認メールが送信されます。"));
 
-        Binder<Membership> binder = new Binder<>();
+        var binder = new Binder<Membership>();
         binder.readBean(membership);
 
-        FormLayout form = new FormLayout();
+        var form = new FormLayout();
         form.setMargin(false);
         addComponent(form);
 
-        Label realName = new Label(membership.getName());
+        var realName = new Label(membership.getName());
         realName.setCaption("名前");
         form.addComponent(realName);
 
-        TextField emailField = new TextField("E-mail (受信可能なもの)", membership.getEmail());
+        var emailField = new TextField("E-mail (受信可能なもの)", membership.getEmail());
         emailField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         form.addComponent(emailField);
         binder.forField(emailField).withValidator(new EmailValidator("不正なアドレスです"))
                 .bind(Membership::getEmail, Membership::setEmail);
 
-        TermSelectLayout javaTermSelect = new TermSelectLayout("Java 研修", membership.getJavaTerm());
+        var javaTermSelect = new TermSelectLayout("Java 研修", membership.getJavaTerm());
         form.addComponent(javaTermSelect);
         binder.forField(javaTermSelect.getTextField())
                 .withConverter(javaTermSelect.converter())
                 .withValidator(javaTermSelect.validator())
                 .bind(m -> javaTermSelect.getValue(), (m, v) -> m.setJavaTerm(javaTermSelect.setValue(v)));
 
-        TermSelectLayout java8TermSelect = new TermSelectLayout("Java 8 研修", membership.getJava8Term());
+        var java8TermSelect = new TermSelectLayout("Java 8 研修", membership.getJava8Term());
         form.addComponent(java8TermSelect);
         binder.forField(java8TermSelect.getTextField())
                 .withConverter(java8TermSelect.converter())
                 .withValidator(java8TermSelect.validator())
                 .bind(m -> java8TermSelect.getValue(), (m, v) -> m.setJava8Term(java8TermSelect.setValue(v)));
 
-        TermSelectLayout goTermSelect = new TermSelectLayout("Go 研修", membership.getGoTerm());
+        var goTermSelect = new TermSelectLayout("Go 研修", membership.getGoTerm());
         form.addComponent(goTermSelect);
         binder.forField(goTermSelect.getTextField())
                 .withConverter(goTermSelect.converter())
                 .withValidator(goTermSelect.validator())
                 .bind(m -> goTermSelect.getValue(), (m, v) -> m.setGoTerm(goTermSelect.setValue(v)));
 
-        Label noticeLabel = new Label("※管理者が上記の登録内容を記入・修正することがあります");
+        var noticeLabel = new Label("※管理者が上記の登録内容を記入・修正することがあります");
         noticeLabel.setStyleName(ValoTheme.LABEL_TINY);
         addComponent(noticeLabel);
 
-        PasswordField passwordField = new PasswordField("パスワード (E-mail アドレス変更時のみ必要)");
+        var passwordField = new PasswordField("パスワード (E-mail アドレス変更時のみ必要)");
         passwordField.setVisible(false);
         passwordField.setEnabled(false);
         emailField.addValueChangeListener(ev -> {
@@ -114,16 +116,16 @@ public class EditMembershipView extends Wrapper implements View {
         });
         addComponent(passwordField);
 
-        HorizontalLayout buttonArea = new HorizontalLayout();
+        var buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
 
-        Button backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        var backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         buttonArea.addComponent(backButton);
 
-        Button submitButton = new Button("編集完了", click -> {
-            String newEmail = emailField.getValue();
+        var submitButton = new Button("編集完了", click -> {
+            var newEmail = emailField.getValue();
             if (newEmail.isEmpty()) {
                 Notification.show("入力が完了していません", Type.WARNING_MESSAGE);
                 return;

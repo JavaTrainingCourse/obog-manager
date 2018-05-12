@@ -1,11 +1,10 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
 
 import com.github.javatrainingcourse.obogmanager.Version;
-import com.github.javatrainingcourse.obogmanager.domain.model.Attendance;
 import com.github.javatrainingcourse.obogmanager.domain.model.Convocation;
 import com.github.javatrainingcourse.obogmanager.domain.model.Membership;
 import com.github.javatrainingcourse.obogmanager.domain.service.AttendanceService;
@@ -58,32 +57,32 @@ public class LoginView extends Wrapper implements View {
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         addComponent(new HeadingLabel("会員ログイン", VaadinIcons.USER));
 
-        FormLayout form = new FormLayout();
+        var form = new FormLayout();
         form.setMargin(false);
         addComponent(form);
 
-        TextField emailField = new TextField("E-mail アドレス");
+        var emailField = new TextField("E-mail アドレス");
         emailField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         emailField.focus();
         form.addComponent(emailField);
 
-        PasswordField passwordField = new PasswordField("パスワード");
+        var passwordField = new PasswordField("パスワード");
         passwordField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         form.addComponent(passwordField);
 
-        HorizontalLayout buttonArea = new HorizontalLayout();
+        var buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
 
-        Button backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
+        var backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
         buttonArea.addComponent(backButton);
 
-        Button passwordResetButton = new Button("パスワードリセット",
+        var passwordResetButton = new Button("パスワードリセット",
                 click -> getUI().getNavigator().navigateTo(ResetPasswordView.VIEW_NAME));
         buttonArea.addComponent(passwordResetButton);
 
-        Button loginButton = new Button("ログイン", click -> {
+        var loginButton = new Button("ログイン", click -> {
             if (emailField.isEmpty() || passwordField.isEmpty()) {
                 Notification.show("入力が完了していません");
                 return;
@@ -112,7 +111,7 @@ public class LoginView extends Wrapper implements View {
             }
 
             // Switch transition by attend or not
-            Attendance attendance = attendanceService.find(membership, latest);
+            var attendance = attendanceService.find(membership, latest);
             if (attendance == null || !attendance.isAttend()) {
                 getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
             } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -70,7 +70,7 @@ public class MailFormView extends Wrapper implements View {
         addComponent(new HeadingLabel("一括メール送信", VaadinIcons.ENVELOPES_O));
 
         // パスパラメーターを取得
-        long cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
+        var cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
                 .mapToLong(Long::parseLong).findFirst().orElse(-1);
 
         List<Convocation> convocations;
@@ -80,15 +80,15 @@ public class MailFormView extends Wrapper implements View {
             ErrorView.show("イベント招集一覧の取得に失敗しました。", e);
             return;
         }
-        List<String> selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
-        String allMembersItem = "全会員";
+        var selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
+        var allMembersItem = "全会員";
         selections.add(0, allMembersItem);
 
-        HorizontalLayout comboBoxArea = new HorizontalLayout();
+        var comboBoxArea = new HorizontalLayout();
         comboBoxArea.setSpacing(true);
         addComponent(comboBoxArea);
 
-        ComboBox<String> convocationComboBox = new ComboBox<>();
+        var convocationComboBox = new ComboBox<String>();
         convocationComboBox.setEmptySelectionAllowed(false);
         convocationComboBox.setTextInputAllowed(false);
         convocationComboBox.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
@@ -114,7 +114,7 @@ public class MailFormView extends Wrapper implements View {
                 return;
             }
         } else {
-            Convocation convocation = convocations.stream().filter(c -> c.getId() == cId).findAny().orElse(null);
+            var convocation = convocations.stream().filter(c -> c.getId() == cId).findAny().orElse(null);
             if (convocation == null) {
                 ErrorView.show("指定されたイベント招集が見つかりません: " + cId, null);
                 return;
@@ -131,7 +131,7 @@ public class MailFormView extends Wrapper implements View {
         }
         if (recipients.size() == 0) {
             addComponent(new Label(VaadinIcons.WARNING.getHtml() + " 送信対象者が一人もいません。", ContentMode.HTML));
-            Button homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+            var homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
             homeButton.setIcon(VaadinIcons.USER);
             addComponent(homeButton);
             setComponentAlignment(homeButton, Alignment.MIDDLE_CENTER);
@@ -144,27 +144,27 @@ public class MailFormView extends Wrapper implements View {
         addComponent(new Label("宛先を確認し、件名と内容を記入してください。"));
         addComponent(new Label("メールは BCC で一括送信されます。"));
 
-        FormLayout form = new FormLayout();
+        var form = new FormLayout();
         form.setMargin(false);
         addComponent(form);
 
-        Label recipientsCountLabel = new Label(recipients.size() + " 名");
+        var recipientsCountLabel = new Label(recipients.size() + " 名");
         recipientsCountLabel.setCaption("宛先数");
         form.addComponent(recipientsCountLabel);
 
-        Label recipientsLabel = new Label(recipients.stream()
+        var recipientsLabel = new Label(recipients.stream()
                 .map(m -> m.getName() + " <" + m.getEmail() + ">")
                 .collect(Collectors.joining(", ")));
         recipientsLabel.setCaption("宛先一覧");
         recipientsLabel.setSizeFull();
         form.addComponent(recipientsLabel);
 
-        TextField subjectField = new TextField("件名");
+        var subjectField = new TextField("件名");
         subjectField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         subjectField.setValue("【お知らせ】Java研修 Go研修 OB・OG会");
         form.addComponent(subjectField);
 
-        TextArea textArea = new TextArea("本文");
+        var textArea = new TextArea("本文");
         textArea.setWidth(100, Unit.PERCENTAGE);
         textArea.setHeight(400, Unit.PIXELS);
         textArea.setValue("Java研修 Go研修 OB・OG会員各位\n\n" +
@@ -175,16 +175,16 @@ public class MailFormView extends Wrapper implements View {
                 "Java研修 Go研修 OB・OG会");
         form.addComponent(textArea);
 
-        HorizontalLayout buttonArea = new HorizontalLayout();
+        var buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
 
-        Button homeButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        var homeButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         homeButton.setIcon(VaadinIcons.USER);
         buttonArea.addComponent(homeButton);
 
-        Button sendButton = new Button("送信", click -> {
+        var sendButton = new Button("送信", click -> {
             if (subjectField.getValue().isEmpty()) {
                 Notification.show("件名を入力してください", Notification.Type.WARNING_MESSAGE);
                 return;

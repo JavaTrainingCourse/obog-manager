@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -35,11 +35,11 @@ public class ThanksView extends Wrapper implements View {
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         addComponent(new HeadingLabel("参加登録完了", VaadinIcons.CHECK));
         addComponent(new Label("参加登録が完了し、確認メールを送信しました。"));
-        Label addressLabel = new Label("しばらく待ってもメールが来ない場合は、お手数ですが " + appReply + " までご連絡ください。");
+        var addressLabel = new Label("しばらく待ってもメールが来ない場合は、お手数ですが " + appReply + " までご連絡ください。");
         addressLabel.setCaption("お願い");
         addressLabel.setIcon(VaadinIcons.LIGHTBULB);
         addComponent(addressLabel);
-        Button homeButton = new Button("ホーム", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
+        var homeButton = new Button("ホーム", click -> getUI().getNavigator().navigateTo(FrontView.VIEW_NAME));
         homeButton.setIcon(VaadinIcons.HOME);
         addComponent(homeButton);
         setComponentAlignment(homeButton, Alignment.MIDDLE_CENTER);

@@ -12,12 +12,19 @@
       "plan": "heroku-postgresql:hobby-dev"
     },
     {
+      "plan": "heroku-redis:hobby-dev"
+    },
+    {
       "plan": "sendgrid:starter"
+    },
+    {
+      "plan": "newrelic:wayne"
     }
   ],
   "env": {
     "SENDGRID_API_KEY": {
-      "description": "Sendgrid API Key"
+      "description": "Sendgrid API Key",
+      "require": false
     },
     "APP_URL": {
       "description": "Application URL"

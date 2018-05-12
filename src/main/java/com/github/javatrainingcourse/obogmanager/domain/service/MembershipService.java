@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.domain.service;
@@ -76,7 +76,7 @@ public class MembershipService {
      * @throws BadCredentialsException   パスワードがマッチしない場合
      */
     public Membership login(String email, String password) {
-        Membership membership = membershipRepository.findByEmail(email);
+        var membership = membershipRepository.findByEmail(email);
         if (membership == null) {
             throw new UsernameNotFoundException(email);
         }

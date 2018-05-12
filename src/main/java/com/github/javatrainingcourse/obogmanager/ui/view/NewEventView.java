@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -49,16 +49,16 @@ public class NewEventView extends Wrapper implements View {
             return;
         }
 
-        Convocation newConvocation = new Convocation();
+        var newConvocation = new Convocation();
         newConvocation.setTargetDate(LocalDate.now());
-        Binder<Convocation> binder = new Binder<>();
+        var binder = new Binder<Convocation>();
         binder.readBean(newConvocation);
 
-        FormLayout form = new FormLayout();
+        var form = new FormLayout();
         form.setMargin(false);
         addComponent(form);
 
-        TextField subjectField = new TextField("件名");
+        var subjectField = new TextField("件名");
         subjectField.setRequiredIndicatorVisible(true);
         subjectField.setPlaceholder("第4回 OB/OG会");
         subjectField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
@@ -66,12 +66,12 @@ public class NewEventView extends Wrapper implements View {
         binder.forField(subjectField).withValidator(new StringLengthValidator("入力が長すぎます", 0, 64))
                 .bind(Convocation::getSubject, Convocation::setSubject);
 
-        DateField targetDateField = new DateField("開催日", newConvocation.getTargetDate());
+        var targetDateField = new DateField("開催日", newConvocation.getTargetDate());
         targetDateField.setRequiredIndicatorVisible(true);
         form.addComponent(targetDateField);
         binder.forField(targetDateField).bind(Convocation::getTargetDate, Convocation::setTargetDate);
 
-        TextArea descriptionArea = new TextArea("案内文 (Markdown)");
+        var descriptionArea = new TextArea("案内文 (Markdown)");
         descriptionArea.setRequiredIndicatorVisible(true);
         descriptionArea.setWidth(100, Unit.PERCENTAGE);
         descriptionArea.setHeight(400, Unit.PIXELS);
@@ -79,15 +79,15 @@ public class NewEventView extends Wrapper implements View {
         binder.forField(descriptionArea).withValidator(new StringLengthValidator("入力が長すぎます", 0, 1024))
                 .bind(Convocation::getDescriptionAsMarkdown, Convocation::setDescription);
 
-        HorizontalLayout buttonArea = new HorizontalLayout();
+        var buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
 
-        Button backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        var backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         buttonArea.addComponent(backButton);
 
-        Button submitButton = new Button("イベント登録", click -> {
+        var submitButton = new Button("イベント登録", click -> {
             if (subjectField.isEmpty() || targetDateField.isEmpty() || descriptionArea.isEmpty()) {
                 Notification.show("入力が完了していません");
                 return;

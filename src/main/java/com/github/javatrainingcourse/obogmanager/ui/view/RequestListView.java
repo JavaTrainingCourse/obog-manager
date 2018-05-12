@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -63,7 +63,7 @@ public class RequestListView extends Wrapper implements View {
         addComponent(new HeadingLabel("会員・イベント参加者一覧", VaadinIcons.USERS));
 
         // パスパラメーターを取得
-        long cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
+        var cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
                 .mapToLong(Long::parseLong).findFirst().orElse(-1);
 
         List<Convocation> convocations;
@@ -73,15 +73,15 @@ public class RequestListView extends Wrapper implements View {
             ErrorView.show("イベント招集一覧の取得に失敗しました。", e);
             return;
         }
-        List<String> selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
-        String allMembersItem = "会員一覧";
+        var selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
+        var allMembersItem = "会員一覧";
         selections.add(0, allMembersItem);
 
-        HorizontalLayout comboBoxArea = new HorizontalLayout();
+        var comboBoxArea = new HorizontalLayout();
         comboBoxArea.setSpacing(true);
         addComponent(comboBoxArea);
 
-        ComboBox<String> convocationComboBox = new ComboBox<>();
+        var convocationComboBox = new ComboBox<String>();
         convocationComboBox.setEmptySelectionAllowed(false);
         convocationComboBox.setTextInputAllowed(false);
         convocationComboBox.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
@@ -92,7 +92,7 @@ public class RequestListView extends Wrapper implements View {
             if (e.getValue().equals(allMembersItem)) {
                 getUI().getNavigator().navigateTo(RequestListView.VIEW_NAME);
             } else {
-                long id = convocations.get(selections.indexOf(e.getValue()) - 1).getId();
+                var id = convocations.get(selections.indexOf(e.getValue()) - 1).getId();
                 getUI().getNavigator().navigateTo(RequestListView.VIEW_NAME + "/" + id);
             }
         });
@@ -107,21 +107,21 @@ public class RequestListView extends Wrapper implements View {
                 return;
             }
             // TXT
-            Button downloadTxtButton = new Button("TXT (名前)");
+            var downloadTxtButton = new Button("TXT (名前)");
             downloadTxtButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
-            FileDownloader txtDownloader = new FileDownloader(createTXT(allMembersItem, memberships));
+            var txtDownloader = new FileDownloader(createTXT(allMembersItem, memberships));
             txtDownloader.extend(downloadTxtButton);
             comboBoxArea.addComponent(downloadTxtButton);
             // CSV
-            Button downloadCsvButton = new Button("CSV (名前,Java,Java8,Go)");
+            var downloadCsvButton = new Button("CSV (名前,Java,Java8,Go)");
             downloadCsvButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
-            FileDownloader csvDownloader = new FileDownloader(createCSV4(allMembersItem, memberships));
+            var csvDownloader = new FileDownloader(createCSV4(allMembersItem, memberships));
             csvDownloader.extend(downloadCsvButton);
             comboBoxArea.addComponent(downloadCsvButton);
             // Grid
             printAllMembers(memberships);
         } else {
-            Convocation convocation = convocations.stream().filter(c -> c.getId() == cId).findAny().orElse(null);
+            var convocation = convocations.stream().filter(c -> c.getId() == cId).findAny().orElse(null);
             if (convocation == null) {
                 ErrorView.show("指定されたイベント招集が見つかりません: " + cId, null);
                 return;
@@ -134,29 +134,29 @@ public class RequestListView extends Wrapper implements View {
                 return;
             }
             // TXT
-            Button downloadTxtButton = new Button("TXT (名前)");
+            var downloadTxtButton = new Button("TXT (名前)");
             downloadTxtButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
-            FileDownloader txtDownloader = new FileDownloader(createTXT(convocation.getSubject(), attendances.stream()
+            var txtDownloader = new FileDownloader(createTXT(convocation.getSubject(), attendances.stream()
                     .filter(Attendance::isAttend).map(Attendance::getMembership).collect(Collectors.toList())));
             txtDownloader.extend(downloadTxtButton);
             comboBoxArea.addComponent(downloadTxtButton);
             // CSV
-            Button downloadCsvButton = new Button("CSV (名前,コメント)");
+            var downloadCsvButton = new Button("CSV (名前,コメント)");
             downloadCsvButton.setIcon(VaadinIcons.DOWNLOAD_ALT);
-            FileDownloader csvDownloader = new FileDownloader(createCSV2(convocation.getSubject(), attendances));
+            var csvDownloader = new FileDownloader(createCSV2(convocation.getSubject(), attendances));
             csvDownloader.extend(downloadCsvButton);
             comboBoxArea.addComponent(downloadCsvButton);
             // Grid
             printConvocationResponses(attendances);
         }
-        Button homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        var homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         homeButton.setIcon(VaadinIcons.USER);
         addComponent(homeButton);
         setComponentAlignment(homeButton, Alignment.MIDDLE_CENTER);
     }
 
     private void printAllMembers(List<Membership> memberships) {
-        Grid<MemberInfo> membershipGrid = new Grid<>();
+        var membershipGrid = new Grid<MemberInfo>();
         membershipGrid.setItems(memberships.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
         membershipGrid.addColumn(MemberInfo::getName).setCaption("名前");
@@ -173,7 +173,7 @@ public class RequestListView extends Wrapper implements View {
     }
 
     private void printConvocationResponses(List<Attendance> attendances) {
-        Grid<MemberInfo> membershipGrid = new Grid<>();
+        var membershipGrid = new Grid<MemberInfo>();
         membershipGrid.setItems(attendances.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getName).setCaption("名前");
         membershipGrid.addColumn(MemberInfo::getEmail).setCaption("E-mail");
@@ -189,7 +189,7 @@ public class RequestListView extends Wrapper implements View {
 
     private StreamResource createCSV2(String subject, List<Attendance> attendances) {
         return new StreamResource(() -> {
-            String csv = "名前,コメント\r\n" + attendances.stream().filter(Attendance::isAttend)
+            var csv = "名前,コメント\r\n" + attendances.stream().filter(Attendance::isAttend)
                     .map(a -> a.getMembership().getName() + "," +
                             a.getComment().replaceAll("\r", "").replaceAll("\n", ""))
                     .collect(Collectors.joining("\r\n"));
@@ -203,7 +203,7 @@ public class RequestListView extends Wrapper implements View {
 
     private StreamResource createCSV4(String subject, List<Membership> memberships) {
         return new StreamResource(() -> {
-            String csv = "名前,Java 研修,Java 8 研修,Go 研修\r\n" + memberships.stream()
+            var csv = "名前,Java 研修,Java 8 研修,Go 研修\r\n" + memberships.stream()
                     .map(m -> m.getName() + "," + MemberInfo.safeTerm2Text(m.getJavaTerm()) + "," +
                             MemberInfo.safeTerm2Text(m.getJava8Term()) + "," + MemberInfo.safeTerm2Text(m.getGoTerm()))
                     .collect(Collectors.joining("\r\n"));
@@ -217,7 +217,7 @@ public class RequestListView extends Wrapper implements View {
 
     private StreamResource createTXT(String subject, List<Membership> memberships) {
         return new StreamResource(() -> {
-            String list = memberships.stream()
+            var list = memberships.stream()
                     .map(Membership::getName)
                     .collect(Collectors.joining("\r\n"));
             try {
@@ -236,7 +236,7 @@ public class RequestListView extends Wrapper implements View {
         private String email;
         private String attend;
 
-        public Long getMembershipId() {
+        Long getMembershipId() {
             return membershipId;
         }
 
@@ -244,35 +244,35 @@ public class RequestListView extends Wrapper implements View {
             return name;
         }
 
-        public String getAdmin() {
+        String getAdmin() {
             return admin;
         }
 
-        public String getEmail() {
+        String getEmail() {
             return email;
         }
 
-        public String getAttend() {
+        String getAttend() {
             return attend;
         }
 
-        public String getComment() {
+        String getComment() {
             return comment;
         }
 
-        public Date getEntryDate() {
+        Date getEntryDate() {
             return entryDate;
         }
 
-        public String getJavaTerm() {
+        String getJavaTerm() {
             return javaTerm;
         }
 
-        public String getJava8Term() {
+        String getJava8Term() {
             return java8Term;
         }
 
-        public String getGoTerm() {
+        String getGoTerm() {
             return goTerm;
         }
 
@@ -283,7 +283,7 @@ public class RequestListView extends Wrapper implements View {
         private String goTerm;
 
         static MemberInfo from(Membership membership) {
-            MemberInfo info = new MemberInfo();
+            var info = new MemberInfo();
             info.membershipId = membership.getId();
             info.name = membership.getName();
             info.admin = membership.isAdmin() ? "✔" : "";
@@ -295,8 +295,8 @@ public class RequestListView extends Wrapper implements View {
         }
 
         static MemberInfo from(Attendance attendance) {
-            MemberInfo info = new MemberInfo();
-            Membership membership = attendance.getMembership();
+            var info = new MemberInfo();
+            var membership = attendance.getMembership();
             info.membershipId = membership.getId();
             info.name = membership.getName();
             info.admin = membership.isAdmin() ? "✔" : "";

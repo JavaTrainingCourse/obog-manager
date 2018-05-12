@@ -12,6 +12,8 @@ import com.github.javatrainingcourse.obogmanager.domain.repository.AttendanceRep
 import com.github.javatrainingcourse.obogmanager.domain.repository.MembershipRepository;
 import com.github.javatrainingcourse.obogmanager.domain.repository.PasswordResetRequestRepository;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.util.Pair;
@@ -22,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +40,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final PasswordResetRequestRepository passwordResetRequestRepository;
     private final PasswordEncoder passwordEncoder;
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AttendanceService.class);
+    private static final Logger log = LoggerFactory.getLogger(AttendanceService.class);
 
     @Autowired
     public AttendanceService(MailService mailService, MembershipRepository membershipRepository,
@@ -62,10 +63,10 @@ public class AttendanceService {
     }
 
     public Pair<Integer, Integer> countAttendees(Convocation convocation) {
-        Map<Boolean, List<Attendance>> result = attendanceRepository.findByConvocation(convocation).stream()
+        var result = attendanceRepository.findByConvocation(convocation).stream()
                 .collect(Collectors.groupingBy(Attendance::isAttend));
-        List<Attendance> attendees = result.get(true);
-        List<Attendance> cancels = result.get(false);
+        var attendees = result.get(true);
+        var cancels = result.get(false);
         return Pair.of(attendees != null ? attendees.size() : 0, cancels != null ? cancels.size() : 0); // yes, no
     }
 
@@ -79,7 +80,7 @@ public class AttendanceService {
      * @throws MailException       メール送信に失敗した場合
      */
     public void register(Membership membership, Convocation convocation, String comment) {
-        Attendance attendance = Attendance.Companion.newAttendance(convocation, membership, comment);
+        var attendance = Attendance.Companion.newAttendance(convocation, membership, comment);
         attendanceRepository.saveAndFlush(attendance);
         mailService.sendAttendMail(membership, convocation);
     }
@@ -98,8 +99,8 @@ public class AttendanceService {
     public void register(Membership membership, String password, Convocation convocation, String comment) {
         membership.setHashedPassword(passwordEncoder.encode(password));
         membership = membershipRepository.saveAndFlush(membership);
-        System.out.println("membership id=" + membership.getId());
-        Attendance attendance = Attendance.Companion.newAttendance(convocation, membership, comment);
+        log.info("membership registered=" + membership.getId());
+        var attendance = Attendance.Companion.newAttendance(convocation, membership, comment);
         attendanceRepository.saveAndFlush(attendance);
         mailService.sendAttendMail(membership, convocation);
     }
@@ -109,7 +110,7 @@ public class AttendanceService {
         if (membership == null || convocation == null) {
             return null;
         }
-        Attendance.AttendanceId id = new Attendance.AttendanceId();
+        var id = new Attendance.AttendanceId();
         id.setMembershipId(membership.getId());
         id.setConvocationId(convocation.getId());
         return attendanceRepository.findById(id);
@@ -135,14 +136,14 @@ public class AttendanceService {
     }
 
     public void requestPasswordReset(String email) {
-        Membership membership = membershipRepository.findByEmail(email);
-        PasswordResetRequest request = PasswordResetRequest.Companion.newRequest(membership);
+        var membership = membershipRepository.findByEmail(email);
+        var request = PasswordResetRequest.Companion.newRequest(membership);
         passwordResetRequestRepository.saveAndFlush(request);
         mailService.sendPasswordResetMail(request);
     }
 
     public PasswordResetRequest getPasswordResetRequest(String token) {
-        PasswordResetRequest request = passwordResetRequestRepository.findByToken(token);
+        var request = passwordResetRequestRepository.findByToken(token);
         if (request == null) {
             throw new IllegalArgumentException("トークンがありません。");
         }
@@ -154,7 +155,7 @@ public class AttendanceService {
 
     @Transactional
     public void updatePassword(PasswordResetRequest request, String newPassword) {
-        Membership membership = request.getMembership();
+        var membership = request.getMembership();
         membership.setHashedPassword(passwordEncoder.encode(newPassword));
         membership.setLastLoginDate(new Date());
         membershipRepository.save(membership);

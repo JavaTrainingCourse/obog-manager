@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -50,7 +50,7 @@ public class MemberListView extends Wrapper implements View {
 
         printAllMembers();
 
-        Button homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        var homeButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         homeButton.setIcon(VaadinIcons.USER);
         addComponent(homeButton);
         setComponentAlignment(homeButton, Alignment.MIDDLE_CENTER);
@@ -64,7 +64,7 @@ public class MemberListView extends Wrapper implements View {
             ErrorView.show("会員一覧の取得に失敗しました。", e);
             return;
         }
-        Grid<MemberInfo> membershipGrid = new Grid<>();
+        var membershipGrid = new Grid<MemberInfo>();
         membershipGrid.setItems(memberships.stream().map(MemberInfo::from).collect(Collectors.toList()));
         membershipGrid.addColumn(MemberInfo::getName).setCaption("名前");
         membershipGrid.addColumn(MemberInfo::getJavaTerm).setCaption("Java研修");

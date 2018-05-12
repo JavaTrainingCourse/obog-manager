@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -47,15 +47,15 @@ public class LogoutConfirmView extends Wrapper implements View {
         addComponent(new HeadingLabel("ログアウト確認", VaadinIcons.INFO_CIRCLE));
         addComponent(new Label("ログアウトします。"));
 
-        HorizontalLayout buttonArea = new HorizontalLayout();
+        var buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
 
-        Button cancelButton = new Button("キャンセル", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        var cancelButton = new Button("キャンセル", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         buttonArea.addComponent(cancelButton);
 
-        Button logoutButton = new Button("ログアウト", click -> {
+        var logoutButton = new Button("ログアウト", click -> {
             membershipService.logout();
             getUI().getNavigator().navigateTo(FrontView.VIEW_NAME);
         });

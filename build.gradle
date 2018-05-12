@@ -8,7 +8,8 @@ plugins {
 }
 
 version = '0.1'
-sourceCompatibility = 1.8
+sourceCompatibility = 10
+targetCompatibility = 10
 
 repositories {
     jcenter()
@@ -21,6 +22,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-mail')
+    runtime('javax.xml.bind:jaxb-api:2.3.0')
     // Spring Security
     compile('org.springframework.security:spring-security-web:4.2.5.RELEASE')
     // Spring Context Support
@@ -40,7 +42,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom 'com.vaadin:vaadin-bom:8.3.3'
+        mavenBom 'com.vaadin:vaadin-bom:8.4.0'
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 mikan
+ * Copyright (c) 2017-2018 mikan
  */
 
 package com.github.javatrainingcourse.obogmanager.ui.view;
@@ -53,7 +53,7 @@ public class EditEventView extends Wrapper implements View {
         }
 
         // パスパラメーターを取得
-        long cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
+        var cId = Stream.of(event.getParameters().split("/")).filter(s -> !s.isEmpty())
                 .mapToLong(Long::parseLong).findFirst().orElse(-1);
 
         List<Convocation> convocations;
@@ -65,13 +65,13 @@ public class EditEventView extends Wrapper implements View {
         }
         if (convocations.isEmpty()) {
             addComponent(new Label("イベントが1件も登録されていません。"));
-            Button backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+            var backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
             addComponent(backButton);
             setComponentAlignment(backButton, Alignment.MIDDLE_CENTER);
             return;
         }
-        List<String> selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
-        ComboBox<String> convocationComboBox = new ComboBox<>();
+        var selections = convocations.stream().map(Convocation::getSubject).collect(Collectors.toList());
+        var convocationComboBox = new ComboBox<String>();
         convocationComboBox.setEmptySelectionAllowed(false);
         convocationComboBox.setTextInputAllowed(false);
         convocationComboBox.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
@@ -79,45 +79,45 @@ public class EditEventView extends Wrapper implements View {
         convocationComboBox.setValue(convocations.stream()
                 .filter(c -> c.getId() == cId).map(Convocation::getSubject).findAny().orElse(""));
         convocationComboBox.addValueChangeListener(e -> {
-            long id = convocations.get(selections.indexOf(e.getValue())).getId();
+            var id = convocations.get(selections.indexOf(e.getValue())).getId();
             getUI().getNavigator().navigateTo(EditEventView.VIEW_NAME + "/" + id);
         });
         addComponent(convocationComboBox);
 
         if (cId == -1) {
             addComponent(new Label("イベントを選択してください。"));
-            Button backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+            var backButton = new Button("戻る", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
             addComponent(backButton);
             setComponentAlignment(backButton, Alignment.MIDDLE_CENTER);
             return;
         }
 
-        Convocation convocation = convocations.stream().filter(c -> c.getId() == cId).findAny().orElse(null);
+        var convocation = convocations.stream().filter(c -> c.getId() == cId).findAny().orElse(null);
         if (convocation == null) {
             ErrorView.show("指定されたイベント招集が見つかりません: " + cId, null);
             return;
         }
 
-        Binder<Convocation> binder = new Binder<>();
+        var binder = new Binder<Convocation>();
         binder.readBean(convocation);
 
-        FormLayout form = new FormLayout();
+        var form = new FormLayout();
         form.setMargin(false);
         addComponent(form);
 
-        TextField subjectField = new TextField("件名", convocation.getSubject());
+        var subjectField = new TextField("件名", convocation.getSubject());
         subjectField.setRequiredIndicatorVisible(true);
         subjectField.setWidth(MainUI.FIELD_WIDTH_WIDE, Unit.PIXELS);
         form.addComponent(subjectField);
         binder.forField(subjectField).withValidator(new StringLengthValidator("入力が長すぎます", 0, 64))
                 .bind(Convocation::getSubject, Convocation::setSubject);
 
-        DateField targetDateField = new DateField("開催日", convocation.getTargetDate());
+        var targetDateField = new DateField("開催日", convocation.getTargetDate());
         targetDateField.setRequiredIndicatorVisible(true);
         form.addComponent(targetDateField);
         binder.forField(targetDateField).bind(Convocation::getTargetDate, Convocation::setTargetDate);
 
-        TextArea descriptionArea = new TextArea("案内文 (Markdown)", convocation.getDescriptionAsMarkdown());
+        var descriptionArea = new TextArea("案内文 (Markdown)", convocation.getDescriptionAsMarkdown());
         descriptionArea.setRequiredIndicatorVisible(true);
         descriptionArea.setWidth(100, Unit.PERCENTAGE);
         descriptionArea.setHeight(400, Unit.PIXELS);
@@ -125,14 +125,14 @@ public class EditEventView extends Wrapper implements View {
         binder.forField(descriptionArea).withValidator(new StringLengthValidator("入力が長すぎます", 0, 1024))
                 .bind(Convocation::getDescriptionAsMarkdown, Convocation::setDescription);
 
-        HorizontalLayout buttonArea = new HorizontalLayout();
+        var buttonArea = new HorizontalLayout();
         buttonArea.setSpacing(true);
         addComponent(buttonArea);
         setComponentAlignment(buttonArea, Alignment.MIDDLE_CENTER);
-        Button backButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
+        var backButton = new Button("会員メニュー", click -> getUI().getNavigator().navigateTo(MenuView.VIEW_NAME));
         backButton.setIcon(VaadinIcons.USER);
         buttonArea.addComponent(backButton);
-        Button submitButton = new Button("変更反映", click -> {
+        var submitButton = new Button("変更反映", click -> {
             if (subjectField.isEmpty() || targetDateField.isEmpty() || descriptionArea.isEmpty()) {
                 Notification.show("入力が完了していません");
                 return;
