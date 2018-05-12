@@ -15,7 +15,10 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-    properties.hibernate.default_schema: obog
+    properties:
+      hibernate:
+        default_schema: obog
+        temp.use_jdbc_metadata_defaults: false
   mail:
     host: smtp.sendgrid.net
     port: 587
