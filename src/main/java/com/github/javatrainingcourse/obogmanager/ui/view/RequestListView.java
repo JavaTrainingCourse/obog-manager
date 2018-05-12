@@ -158,7 +158,6 @@ public class RequestListView extends Wrapper implements View {
     private void printAllMembers(List<Membership> memberships) {
         var membershipGrid = new Grid<MemberInfo>();
         membershipGrid.setItems(memberships.stream().map(MemberInfo::from).collect(Collectors.toList()));
-        membershipGrid.addColumn(MemberInfo::getMembershipId).setCaption("#");
         membershipGrid.addColumn(MemberInfo::getName).setCaption("名前");
         membershipGrid.addColumn(MemberInfo::getAdmin).setCaption("Admin");
         membershipGrid.addColumn(MemberInfo::getEmail).setCaption("E-mail");
@@ -229,16 +228,10 @@ public class RequestListView extends Wrapper implements View {
     }
 
     static class MemberInfo {
-
-        private Long membershipId;
         private String name;
         private String admin;
         private String email;
         private String attend;
-
-        Long getMembershipId() {
-            return membershipId;
-        }
 
         public String getName() {
             return name;
@@ -284,7 +277,6 @@ public class RequestListView extends Wrapper implements View {
 
         static MemberInfo from(Membership membership) {
             var info = new MemberInfo();
-            info.membershipId = membership.getId();
             info.name = membership.getName();
             info.admin = membership.isAdmin() ? "✔" : "";
             info.email = membership.getEmail();
@@ -297,7 +289,6 @@ public class RequestListView extends Wrapper implements View {
         static MemberInfo from(Attendance attendance) {
             var info = new MemberInfo();
             var membership = attendance.getMembership();
-            info.membershipId = membership.getId();
             info.name = membership.getName();
             info.admin = membership.isAdmin() ? "✔" : "";
             info.email = membership.getEmail();

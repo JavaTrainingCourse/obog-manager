@@ -59,11 +59,11 @@ public class AttendanceService {
     }
 
     public List<Attendance> getResponses(Convocation convocation) {
-        return attendanceRepository.findByConvocation(convocation);
+        return attendanceRepository.findByConvocationOrderByCreatedDateDesc(convocation);
     }
 
     public Pair<Integer, Integer> countAttendees(Convocation convocation) {
-        var result = attendanceRepository.findByConvocation(convocation).stream()
+        var result = attendanceRepository.findByConvocationOrderByCreatedDateDesc(convocation).stream()
                 .collect(Collectors.groupingBy(Attendance::isAttend));
         var attendees = result.get(true);
         var cancels = result.get(false);
@@ -98,6 +98,7 @@ public class AttendanceService {
     @Transactional
     public void register(Membership membership, String password, Convocation convocation, String comment) {
         membership.setHashedPassword(passwordEncoder.encode(password));
+        membership.setCreatedDate(new Date());
         membership = membershipRepository.saveAndFlush(membership);
         log.info("membership registered=" + membership.getId());
         var attendance = Attendance.Companion.newAttendance(convocation, membership, comment);

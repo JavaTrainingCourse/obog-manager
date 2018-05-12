@@ -9,11 +9,13 @@ import com.github.javatrainingcourse.obogmanager.domain.repository.MembershipRep
 import com.vaadin.server.VaadinSession;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public class MembershipService {
     }
 
     public List<Membership> getAll() {
-        return membershipRepository.findAll();
+        return membershipRepository.findAll(new Sort(Sort.Direction.DESC, "id"));
     }
 
     /**
@@ -83,6 +85,7 @@ public class MembershipService {
         if (!validatePassword(membership.getHashedPassword(), password)) {
             throw new BadCredentialsException("invalid password for " + email);
         }
+        membership.setLastLoginDate(new Date());
         beginSession(membership);
         return membership;
     }

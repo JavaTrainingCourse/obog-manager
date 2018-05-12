@@ -16,5 +16,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface AttendanceRepository : JpaRepository<Attendance, Attendance.AttendanceId> {
     fun findById(id: Attendance.AttendanceId): Attendance?
-    fun findByConvocation(convocation: Convocation): List<Attendance>
+    fun findByConvocationOrderByCreatedDateDesc(convocation: Convocation): List<Attendance>
 }
