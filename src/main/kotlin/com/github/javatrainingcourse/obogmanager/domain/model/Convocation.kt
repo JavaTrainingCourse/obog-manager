@@ -29,7 +29,7 @@ class Convocation {
     @Column(nullable = false, length = 64)
     var subject: String? = null
 
-    @Column(nullable = false, length = 1024)
+    @Column(nullable = false, length = 8192)
     var description: String? = null
 
     @Column

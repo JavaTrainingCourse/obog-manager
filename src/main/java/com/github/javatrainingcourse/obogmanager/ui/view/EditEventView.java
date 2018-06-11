@@ -122,7 +122,7 @@ public class EditEventView extends Wrapper implements View {
         descriptionArea.setWidth(100, Unit.PERCENTAGE);
         descriptionArea.setHeight(400, Unit.PIXELS);
         form.addComponent(descriptionArea);
-        binder.forField(descriptionArea).withValidator(new StringLengthValidator("入力が長すぎます", 0, 1024))
+        binder.forField(descriptionArea).withValidator(new StringLengthValidator("入力が長すぎます", 0, 8192))
                 .bind(Convocation::getDescriptionAsMarkdown, Convocation::setDescription);
 
         var buttonArea = new HorizontalLayout();
