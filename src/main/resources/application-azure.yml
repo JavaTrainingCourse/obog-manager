@@ -3,12 +3,15 @@ server:
 
 spring:
   datasource:
-      driverClassName: org.postgresql.Driver
-      tomcat:
-        max-active: 3
-        max-idle: 2
-        min-idle: 1
-        initial-size: 1
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    tomcat:
+      max-active: 3
+      max-idle: 2
+      min-idle: 1
+      initial-size: 1
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
