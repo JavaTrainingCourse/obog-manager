@@ -6,9 +6,9 @@ OB/OG会の参加登録を受け付けるシステムです。
 
 ## 環境
 
-[java-obog.herokuapp.com](https://java-obog.herokuapp.com/) (Heroku US Region) で稼働しています。
+[java-obog.azurewebsites.net](https://java-obog.azurewebsites.net/) (Azure App Service) で稼働しています。
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/JavaTrainingCourse/obog-manager)
+※ 2022/11/28 Heroku から移行しました
 
 ## 使っているもの
 
@@ -19,15 +19,23 @@ OB/OG会の参加登録を受け付けるシステムです。
 
 ### データベース
 
-* PostgreSQL (Heroku)
+* PostgreSQL (ElephantSQL)
 * HSQLDB (開発)
 
 ## 開発環境構築
 
 用意するもの:
 
-* Java SE Development Kit 8
-* IntelliJ IDEA Ultimate (要購入)
+* Java SE Development Kit 11
+* IntelliJ IDEA
+* Azure CLI
+
+Azure App Service デプロイ方法:
+
+```
+./gradlew build
+az webapp deploy --resource-group java-obog_group --name java-obog --type jar --src-path build/libs/obog-manager.jar
+```
 
 ## ライセンス
 

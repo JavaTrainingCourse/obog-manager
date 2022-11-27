@@ -7,7 +7,7 @@
 # Hide production profiles and deploy scripts
 /src/main/resources/*.yml
 !/src/main/resources/application.yml
-!/src/main/resources/application-heroku.yml
+!/src/main/resources/application-azure.yml
 
 ### STS ###
 .apt_generated
